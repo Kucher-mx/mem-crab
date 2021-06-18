@@ -5,7 +5,7 @@ import {SET_CONSTS} from '../../actions/action'
 
 import './start.styles.css'
 
-const StartPage = ({history, SET_CONSTS}) => {
+const StartPage = ({history, setConsts}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -14,8 +14,15 @@ const StartPage = ({history, SET_CONSTS}) => {
             N: e.target[1].value,
             X: e.target[2].value
         }
-        SET_CONSTS(value)
-        history.push('/app')
+
+        if(value.X > (value.M * value.N) - 1){
+            window.location.reload();
+            alert('X should be less than M * N')
+            // history.push('/')
+        }else{
+            setConsts(value)
+            history.push('/app')
+        }
     }
 
     return (
@@ -44,8 +51,10 @@ const stateToProps = (state) => {
     return {}
 }
 
-const actionToProps = {
-    SET_CONSTS,
+function mapDispatchToProps(dispatch){
+    return{
+        setConsts: (value) => dispatch(SET_CONSTS(value)),
+    }
 }
 
-export default connect(stateToProps, actionToProps)(withRouter(StartPage))
+export default connect(stateToProps, mapDispatchToProps)(withRouter(StartPage))
