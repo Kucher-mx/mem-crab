@@ -2,16 +2,16 @@ const SET_CONSTS = (value) => {
     return {type: 'SET_CONSTS', value };
 }
 
-const ADD_ROW = (newMenu) => {
-    return {type: 'ADD_ROW', cards: newMenu};
+const ADD_ROW = () => {
+    return {type: 'ADD_ROW'};
 }
 
-const REMOVE_ROW = (newMenu) => {
-    return {type: 'REMOVE_ROW', cards: newMenu};
+const REMOVE_ROW = () => {
+    return {type: 'REMOVE_ROW'};
 }
 
-const ADD_AMOUNT = (newMenu) => {
-    return {type: 'ADD_AMOUNT', cards: newMenu};
+const ADD_AMOUNT = (id) => {
+    return {type: 'ADD_AMOUNT', value: id};
 }
 
 export {
