@@ -20,6 +20,7 @@
 
 .sum-cell .background {
     /* display: none; */
+    background-color: rgba(238, 40, 49, 0.576);
     background-color: rgba(19, 255, 251, 0.5);
     position: absolute;
     height: 100%;

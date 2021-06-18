@@ -53,8 +53,13 @@ const reducer = (state = initialState, actions) => {
             return { ...state, table: addTable, M: +state.M + 1}
 
         case 'REMOVE_ROW':
+            if(state.table.length === 1){
+                return {...state}
+            }
+
             const removeTable = [...state.table]
             removeTable.pop()
+            
             return { ...state, M: state.M - 1, table: removeTable }
             
         default:

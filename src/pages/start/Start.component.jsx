@@ -23,15 +23,15 @@ const StartPage = ({history, SET_CONSTS}) => {
             <form onSubmit={handleSubmit}>
                 <div className="label-wrapper">
                     <label>M:
-                        <input type="text"/>
+                        <input type="number" required/>
                     </label>
 
                     <label>N:
-                        <input type="text"/>
+                        <input type="number" required/>
                     </label>
 
                     <label>X:
-                        <input type="text"/>
+                        <input type="number" required/>
                     </label>
                 </div>
                 <button type="submit">sumbit</button>

@@ -17,6 +17,9 @@
   margin-bottom: 15px;
   text-align: center;
   font-family: arial, sans-serif;
+  color: #000;
+  font-size: 36px;
+  text-decoration: none;
 }
 
 .table {
@@ -31,9 +34,13 @@
   padding: 8px;
 }
 
+.table td{
+  transition: all 0.45s ease-in;
+}
+
 /* .table tr:nth-child(even){background-color: #a686b3;} */
 
-.table td:hover {background-color: rgb(213, 82, 78);}
+/* .table td:hover {background-color: rgb(213, 82, 78);} */
 
 .table th {
   padding-top: 12px;
