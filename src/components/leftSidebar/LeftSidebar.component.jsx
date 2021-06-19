@@ -9,16 +9,20 @@ const LeftSidebar = ({table}) => {
     const inHoverSumHandle = (e) => {
         let value = 0
         if(!e.target.classList.contains('background') && !e.target.classList.contains('persent')){
-            value = +e.target.innerText;
+            value = e.target.innerText;
         }else{
-            value = +e.target.parentNode.innerText;
+            value = e.target.parentNode.innerText;
         }
 
         let genSum = 0
         if(table.length !== 0){
             genSum = table.flat().reduce((a, b) => ({amount: a.amount + b.amount}))
         }
+        console.log(value);
+
         const persent = +((value * 100) / genSum.amount).toFixed(1)
+
+        console.log(persent);
 
         if(!e.target.classList.contains('background') && !e.target.classList.contains('persent')){
             e.target.style.fontSize = '0px'
@@ -26,19 +30,19 @@ const LeftSidebar = ({table}) => {
 
             e.target.children[1].innerText = persent + "%"
             e.target.children[1].style.zIndex = 3
-            e.target.children[1].style.opacity = 1
+            e.target.children[1].style.fontSize = '16px'
         }else if(e.target.classList.contains('background')){
             e.target.style.width = persent + "%"
             e.target.parentNode.style.fontSize = '0px'
 
             e.target.nextSibling.innerText = persent + "%"
-            e.target.nextSibling.style.opacity = 1
+            e.target.nextSibling.style.fontSize = '16px'
         }else{
             e.target.previousSibling.style.width = persent + "%"
             e.target.parentNode.style.fontSize = '0'
 
             e.target.innerText = persent + "%"
-            e.target.style.opacity = 1
+            e.target.style.fontSize = '16px'
         }
     }
 
@@ -48,15 +52,15 @@ const LeftSidebar = ({table}) => {
             e.target.style.fontSize = '16px'
             e.target.children[1].innerText = ''
             e.target.children[1].style.zIndex = -1
-            e.target.children[1].style.opacity = 0
+            e.target.children[1].style.fontSize = '0px'
         }else if(e.target.classList.contains('background')){
             e.target.style.width = 0 + "%"
             e.target.parentNode.style.fontSize = '16px'
             e.target.nextSibling.innerText = ''
-            e.target.nextSibling.opacity = 0
+            e.target.nextSibling.fontSize = '0px'
         }else{
             e.target.previousSibling.style.width = ''
-            e.target.style.opacity = 0
+            e.target.style.fontSize = '0px'
             e.target.parentNode.style.fontSize = '16px'
         }
     }
