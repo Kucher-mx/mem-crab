@@ -16,6 +16,7 @@
     position: relative;
     background-color: transparent;
     z-index: 2;
+    transition: font-size 0.2s ease-in;
 }
 
 .sum-cell .background {
@@ -28,4 +29,16 @@
     left: 0;
     z-index: -1;
     transition: width 0.4s ease-in-out;
+}
+
+.sum-cell .persent{
+    /* display: none; */
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    font-size: 16px;
+    transition: opacity 0.8s ease-in-out;
 }
