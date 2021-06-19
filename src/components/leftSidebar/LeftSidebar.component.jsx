@@ -29,8 +29,6 @@ const LeftSidebar = ({table}) => {
         }
     }
 
-
-
     return (
         <div className='left-sidebar'>
             {table.map((collumn, idx) => {

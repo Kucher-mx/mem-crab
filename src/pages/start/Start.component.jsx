@@ -15,10 +15,9 @@ const StartPage = ({history, setConsts}) => {
             X: e.target[2].value
         }
 
-        if(value.X > (value.M * value.N) - 1){
+        if(value.X > (value.M * value.N) - 1 || value.M < 0 || value.N < 0){
             window.location.reload();
-            alert('X should be less than M * N')
-            // history.push('/')
+            alert('X < M * N, M&N > 0')
         }else{
             setConsts(value)
             history.push('/app')
