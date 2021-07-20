@@ -1,4 +1,4 @@
-import React, {BaseSyntheticEvent} from "react";
+import React, {FC, MouseEvent} from "react";
 import {connect} from "react-redux";
 import {RouteComponentProps, withRouter} from "react-router";
 import {Link} from "react-router-dom";
@@ -11,35 +11,30 @@ import type {cellTypes, valueTypes} from "../../typeScript/types";
 
 import "./main.styles.css";
 
-function MainPage({
-    items,
-    table,
-    increase,
-    history,
-    highlite,
-    unHighlite,
-}: {
+interface IMain {
     items: valueTypes;
     table: {id: string; amount: number; isHighlited: boolean}[][];
     history: RouteComponentProps["history"];
     increase: (id: string) => {};
     highlite: (id: string) => {};
     unHighlite: () => {};
-}) {
+}
+
+const MainPage: FC<IMain> = ({items, table, increase, history, highlite, unHighlite}) => {
     if (table.length === 0) {
         history.push("/");
     }
 
-    const inHoverCellHandle = (e: BaseSyntheticEvent) => {
+    const inHoverCellHandle = (e: MouseEvent) => {
         const cellsToHighlite: cellTypes[] = [];
         let tempArr: cellTypes[] = [];
 
-        table.forEach((subArr: cellTypes[]) => {
+        table.forEach(subArr => {
             tempArr = tempArr.concat(subArr);
         });
         tempArr.sort((a, b) => a.amount - b.amount);
 
-        const hoverElementIdx = tempArr.findIndex(el => (e.target ? el.id === e.target.id : false));
+        const hoverElementIdx = tempArr.findIndex(el => (e.currentTarget ? el.id === e.currentTarget.id : false));
 
         cellsToHighlite.push(tempArr[hoverElementIdx]);
 
@@ -84,9 +79,9 @@ function MainPage({
     };
 
     const renderTableCells = () =>
-        table.map((collumn: cellTypes[]) => (
+        table.map(collumn => (
             <tr key={`_C${Math.random().toString(36).substr(2, 7)}`}>
-                {collumn.map(({id, amount, isHighlited}: cellTypes) => {
+                {collumn.map(({id, amount, isHighlited}) => {
                     const classes = [];
                     if (isHighlited) {
                         classes.push("highlite");
@@ -125,14 +120,9 @@ function MainPage({
             <Buttons />
         </div>
     );
-}
+};
 
-function mapStateToProps(state: {
-    M: number;
-    N: number;
-    X: number;
-    table: cellTypes[][];
-}) {
+function mapStateToProps(state: {M: number; N: number; X: number; table: cellTypes[][]}) {
     return {
         items: {M: state.M, N: state.N, X: state.X},
         table: state.table,

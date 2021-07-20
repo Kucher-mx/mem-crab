@@ -1,4 +1,4 @@
-import React, {FormEvent, useRef} from "react";
+import React, {FormEvent, useRef, FC} from "react";
 import {connect} from "react-redux";
 import {RouteComponentProps, withRouter} from "react-router";
 
@@ -8,13 +8,12 @@ import {generateTable} from "./start.utils";
 
 import "./start.styles.css";
 
-function StartPage({
-    history,
-    setConsts,
-}: {
+interface IStart {
     history: RouteComponentProps["history"];
     setConsts: (value: {table: cellTypes[][]; consts: valueTypes}) => {};
-}) {
+}
+
+const StartPage: FC<IStart> = ({history, setConsts}) => {
     const refM = useRef<HTMLInputElement>(null);
     const refN = useRef<HTMLInputElement>(null);
     const refX = useRef<HTMLInputElement>(null);
@@ -59,7 +58,7 @@ function StartPage({
             </form>
         </div>
     );
-}
+};
 
 const mapDispatchToProps = (
     dispatch: (arg0: {type: string; value: {table: cellTypes[][]; consts: valueTypes}}) => {}

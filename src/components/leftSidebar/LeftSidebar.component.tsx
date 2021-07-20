@@ -1,4 +1,4 @@
-import React, {BaseSyntheticEvent} from "react";
+import React, {FC, MouseEvent} from "react";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
 
@@ -7,26 +7,24 @@ import {rowSumTypes} from "../../typeScript/types";
 
 import "./leftSidebar.styles.css";
 
-function LeftSidebar({
-    rowSum,
-    highlite_sum,
-    unHighlite_sum,
-}: {
+interface ILeftSidebar {
     rowSum: rowSumTypes[];
     highlite_sum: (id: string) => {};
     unHighlite_sum: () => {};
-}) {
-    const inHoverSumHandle = (e: BaseSyntheticEvent) => {
-        highlite_sum(e.target.id);
+}
+
+const LeftSidebar: FC<ILeftSidebar> = ({rowSum, highlite_sum, unHighlite_sum}) => {
+    const inHoverSumHandle = (e: MouseEvent) => {
+        highlite_sum(e.currentTarget.id);
     };
 
-    const outHoverSumHandle = (e: BaseSyntheticEvent) => {
+    const outHoverSumHandle = () => {
         unHighlite_sum();
     };
 
     return (
         <div className="left-sidebar">
-            {rowSum.map((item: rowSumTypes) => {
+            {rowSum.map(item => {
                 const backgroundStyles = item.isHoveredSum
                     ? {
                           width: `${item.rowPersent}%`,
@@ -41,7 +39,7 @@ function LeftSidebar({
                             inHoverSumHandle(e);
                         }}
                         onMouseLeave={e => {
-                            outHoverSumHandle(e);
+                            outHoverSumHandle();
                         }}
                     >
                         <div className="background" style={backgroundStyles} />
@@ -51,7 +49,7 @@ function LeftSidebar({
             })}
         </div>
     );
-}
+};
 
 const stateToProps = (state: {M: number; N: number; X: number; rowSum: rowSumTypes[]}) => ({
     items: {M: state.M, N: state.N, X: state.X},

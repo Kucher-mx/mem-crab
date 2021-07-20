@@ -1,4 +1,4 @@
-import React from "react";
+import React, {FC} from "react";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
 
@@ -6,15 +6,23 @@ import {ADD_ROW, REMOVE_ROW} from "../../actions/action";
 
 import "./buttons.styles.css";
 
+interface IButtons {
+    add: () => {};
+    remove: () => {};
+}
 
-function Buttons({add, remove}: {add: () => ({}); remove: () => ({})}) {
+const Buttons: FC<IButtons> = ({add, remove}) => {
     return (
         <div className="buttons">
-            <button onClick={add} type="button">+</button>
-            <button onClick={remove} type="button">-</button>
+            <button onClick={add} type="button">
+                +
+            </button>
+            <button onClick={remove} type="button">
+                -
+            </button>
         </div>
     );
-}
+};
 
 function mapDispatchToProps(dispatch: (arg0: {type: string}) => {}) {
     return {
