@@ -38,7 +38,7 @@ const BottomSidebar: FC<IBottom> = ({items, table}) => {
         <div className="bottom">
             <div className="bottom-sidebar" style={{gridTemplateColumns: `repeat(${items.N}, 1fr)`}}>
                 {colInfo.map((num) => (
-                    <div key={`_${num}`} className="cell">
+                    <div key={`_${num + Math.random().toString(36).substr(2, 7)}`} className="cell">
                         {num}
                     </div>
                 ))}

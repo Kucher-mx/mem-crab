@@ -16,7 +16,7 @@ interface IMain {
     table: {id: string; amount: number; isHighlited: boolean}[][];
     history: RouteComponentProps["history"];
     increase: (id: string) => {};
-    highlite: (id: string) => {};
+    highlite: (id: string[]) => {};
     unHighlite: () => {};
 }
 
@@ -26,7 +26,7 @@ const MainPage: FC<IMain> = ({items, table, increase, history, highlite, unHighl
     }
 
     const inHoverCellHandle = (e: MouseEvent) => {
-        const cellsToHighlite: cellTypes[] = [];
+        const cellsToHighlite: string[] = [];
         let tempArr: cellTypes[] = [];
 
         table.forEach(subArr => {
@@ -36,20 +36,20 @@ const MainPage: FC<IMain> = ({items, table, increase, history, highlite, unHighl
 
         const hoverElementIdx = tempArr.findIndex(el => (e.currentTarget ? el.id === e.currentTarget.id : false));
 
-        cellsToHighlite.push(tempArr[hoverElementIdx]);
+        cellsToHighlite.push(tempArr[hoverElementIdx].id);
 
         let iterateLess = hoverElementIdx === 0 ? 0 : hoverElementIdx - 1;
         let iterateMany = hoverElementIdx === tempArr.length ? tempArr.length : hoverElementIdx + 1;
 
         while (cellsToHighlite.length <= items.X) {
             if (iterateLess === 0) {
-                cellsToHighlite.push(tempArr[iterateMany]);
+                cellsToHighlite.push(tempArr[iterateMany].id);
                 iterateMany += 1;
                 continue;
             }
 
             if (iterateMany === tempArr.length) {
-                cellsToHighlite.push(tempArr[iterateLess]);
+                cellsToHighlite.push(tempArr[iterateLess].id);
                 iterateLess -= 1;
                 continue;
             }
@@ -58,51 +58,23 @@ const MainPage: FC<IMain> = ({items, table, increase, history, highlite, unHighl
             const diffMany = Math.abs(tempArr[iterateMany].amount - tempArr[hoverElementIdx].amount);
 
             if (diffLess < diffMany) {
-                cellsToHighlite.push(tempArr[iterateLess]);
+                cellsToHighlite.push(tempArr[iterateLess].id);
                 iterateLess - 1 === 0 ? (iterateLess = 0) : (iterateLess -= 1);
                 continue;
             } else {
-                cellsToHighlite.push(tempArr[iterateMany]);
+                cellsToHighlite.push(tempArr[iterateMany].id);
                 iterateMany + 1 === tempArr.length - 1 ? (iterateMany = tempArr.length - 1) : (iterateMany += 1);
 
                 continue;
             }
         }
-
-        cellsToHighlite.forEach(el => {
-            highlite(el.id);
-        });
+        
+        highlite(cellsToHighlite);
     };
 
     const outHoverCellHandle = () => {
         unHighlite();
     };
-
-    const renderTableCells = () =>
-        table.map(collumn => (
-            <tr key={`_C${Math.random().toString(36).substr(2, 7)}`}>
-                {collumn.map(({id, amount, isHighlited}) => {
-                    const classes = [];
-                    if (isHighlited) {
-                        classes.push("highlite");
-                    }
-                    return (
-                        <td
-                            className={classes.join(" ")}
-                            onClick={() => increase(id)}
-                            key={id + Math.random().toString(36).substr(2, 9)}
-                            id={id}
-                            onMouseEnter={e => {
-                                inHoverCellHandle(e);
-                            }}
-                            onMouseLeave={outHoverCellHandle}
-                        >
-                            {amount}
-                        </td>
-                    );
-                })}
-            </tr>
-        ));
 
     return (
         <div className="main-page">
@@ -111,7 +83,37 @@ const MainPage: FC<IMain> = ({items, table, increase, history, highlite, unHighl
             </Link>
             <div className="table-wrapper">
                 <table className="table">
-                    <tbody>{renderTableCells()}</tbody>
+                    <tbody>
+                        
+                        {
+                            table.map(collumn => (
+                                <tr key={`_C${Math.random().toString(36).substr(2, 7)}`}>
+                                    {collumn.map(({id, amount, isHighlited}) => {
+                                        const classes = [];
+                                        if (isHighlited) {
+                                            classes.push("highlite");
+                                        }
+                                        
+                                        return (
+                                            <td
+                                                className={classes.join(" ")}
+                                                onClick={() => increase(id)}
+                                                key={id + Math.random().toString(36).substr(2, 9)}
+                                                id={id}
+                                                onMouseEnter={e => {
+                                                    inHoverCellHandle(e);
+                                                }}
+                                                onMouseLeave={outHoverCellHandle}
+                                            >
+                                                {amount}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))
+                        }
+                        
+                    </tbody>
                 </table>
                 <LeftSidebar />
             </div>
@@ -129,10 +131,10 @@ function mapStateToProps(state: {M: number; N: number; X: number; table: cellTyp
     };
 }
 
-function mapDispatchToProps(dispatch: (arg0: {type: string; value?: String}) => {}) {
+function mapDispatchToProps(dispatch: (arg0: {type: string; id?: String[] | String}) => {}) {
     return {
         increase: (id: String) => dispatch(ADD_AMOUNT(id)),
-        highlite: (id: String) => dispatch(HIGHLITE(id)),
+        highlite: (id: String[]) => dispatch(HIGHLITE(id)),
         unHighlite: () => dispatch(UNHIGHLITE()),
     };
 }

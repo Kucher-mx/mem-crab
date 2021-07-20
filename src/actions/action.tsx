@@ -8,7 +8,7 @@ const REMOVE_ROW = () => ({type: "REMOVE_ROW"});
 
 const ADD_AMOUNT = (id: String) => ({type: "ADD_AMOUNT", id});
 
-const HIGHLITE = (id: String) => ({type: "HIGHLITE", id});
+const HIGHLITE = (id: String[]) => ({type: "HIGHLITE", id});
 
 const UNHIGHLITE = () => ({type: "UNHIGHLITE"});
 

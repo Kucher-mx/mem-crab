@@ -1,4 +1,4 @@
-import React, {FormEvent, useRef, FC} from "react";
+import React, {FC,FormEvent, useRef} from "react";
 import {connect} from "react-redux";
 import {RouteComponentProps, withRouter} from "react-router";
 

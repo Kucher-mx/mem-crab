@@ -11,8 +11,7 @@ interface IButtons {
     remove: () => {};
 }
 
-const Buttons: FC<IButtons> = ({add, remove}) => {
-    return (
+const Buttons: FC<IButtons> = ({add, remove}) => (
         <div className="buttons">
             <button onClick={add} type="button">
                 +
@@ -22,7 +21,6 @@ const Buttons: FC<IButtons> = ({add, remove}) => {
             </button>
         </div>
     );
-};
 
 function mapDispatchToProps(dispatch: (arg0: {type: string}) => {}) {
     return {

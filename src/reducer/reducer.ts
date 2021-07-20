@@ -20,7 +20,7 @@ const reducer = (
         rowSum: rowSumTypes[];
         colAverage: number[];
     } = initialState,
-    actions: {type: string; value?: actionTypes; id?: string}
+    actions: {type: string; value?: actionTypes; id?: string | string[]}
 ) => {
     switch (actions.type) {
         case types.ADD_AMOUNT:
@@ -45,9 +45,9 @@ const reducer = (
         case types.HIGHLITE:
             return {
                 ...state,
-                table: state.table.map((arr: cellTypes[]) => {
-                    arr.map((el: cellTypes) => {
-                        if (el.id === actions.id) {
+                table: state.table.map(arr => {
+                    arr.map(el => {
+                        if(actions.id?.includes(el.id)){
                             el.isHighlited = true;
                         }
                         return el;
