@@ -1,17 +1,19 @@
-import React, {FC} from "react";
+import React, {Dispatch, FC} from "react";
 import {connect} from "react-redux";
-import {withRouter} from "react-router";
+import {RouteComponentProps, withRouter} from "react-router";
 
 import {ADD_ROW, REMOVE_ROW} from "../../actions/action";
+import {stateTypes} from "../../typeScript/types";
 
 import "./buttons.styles.css";
 
 interface IButtons {
-    add: () => {};
-    remove: () => {};
+    add: () => void;
+    remove: () => void;
 }
 
-const Buttons: FC<IButtons> = ({add, remove}) => (
+function Buttons({add, remove}: IButtons) {
+    return (
         <div className="buttons">
             <button onClick={add} type="button">
                 +
@@ -21,12 +23,20 @@ const Buttons: FC<IButtons> = ({add, remove}) => (
             </button>
         </div>
     );
+}
 
-function mapDispatchToProps(dispatch: (arg0: {type: string}) => {}) {
+interface MapDispatchToPropsTypes {
+    add: () => void;
+    remove: () => void;
+}
+
+function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
     return {
         add: () => dispatch(ADD_ROW()),
         remove: () => dispatch(REMOVE_ROW()),
     };
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(Buttons));
+export default withRouter<RouteComponentProps<{}>, any>(
+    connect<IButtons, MapDispatchToPropsTypes, {}, stateTypes>(null, mapDispatchToProps)(Buttons)
+);

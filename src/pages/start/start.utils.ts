@@ -3,9 +3,10 @@ import { generateID, getRandomInt } from "../../utils/utils";
 
 export const generateTable = (values: valueTypes): {table: cellTypes[][], consts: valueTypes} => {
     const table: cellTypes[][] = []
-
+    // eslint-disable-next-line no-loops/no-loops
     for (let i = 0; i < values.M; i++) {
         table[i] = [];
+        // eslint-disable-next-line no-loops/no-loops
         for (let j = 0; j < values.N; j++) {
             const obj: cellTypes = {
                 id: generateID(),

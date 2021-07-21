@@ -1,19 +1,19 @@
-import React, {FC,FormEvent, useRef} from "react";
+import React, {Dispatch,FC,FormEvent, useRef} from "react";
 import {connect} from "react-redux";
 import {RouteComponentProps, withRouter} from "react-router";
 
 import {SET_CONSTS} from "../../actions/action";
-import type {cellTypes, valueTypes} from "../../typeScript/types";
+import type {cellTypes, stateTypes, valueTypes} from "../../typeScript/types";
 import {generateTable} from "./start.utils";
 
 import "./start.styles.css";
 
 interface IStart {
     history: RouteComponentProps["history"];
-    setConsts: (value: {table: cellTypes[][]; consts: valueTypes}) => {};
+    setConsts: (value: {table: cellTypes[][]; consts: valueTypes}) => void;
 }
 
-const StartPage: FC<IStart> = ({history, setConsts}) => {
+function StartPage({history, setConsts}: IStart) {
     const refM = useRef<HTMLInputElement>(null);
     const refN = useRef<HTMLInputElement>(null);
     const refX = useRef<HTMLInputElement>(null);
@@ -58,12 +58,15 @@ const StartPage: FC<IStart> = ({history, setConsts}) => {
             </form>
         </div>
     );
-};
+}
+
+interface MapDispatchToPropsTypes {
+    setConsts: (value: {table: cellTypes[][]; consts: valueTypes}) => void;
+}
 
 const mapDispatchToProps = (
-    dispatch: (arg0: {type: string; value: {table: cellTypes[][]; consts: valueTypes}}) => {}
-) => ({
+    dispatch: Dispatch<{type: string; table?: cellTypes[][]; consts?: valueTypes}>) => ({
     setConsts: (value: {table: cellTypes[][]; consts: valueTypes}) => dispatch(SET_CONSTS(value)),
 });
 
-export default withRouter(connect(null, mapDispatchToProps)(StartPage));
+export default withRouter<RouteComponentProps<{}>, any>(connect<IStart, MapDispatchToPropsTypes, {}, stateTypes>(null, mapDispatchToProps)(StartPage));

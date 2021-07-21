@@ -1,4 +1,4 @@
-import React, {FC, MouseEvent} from "react";
+import React, {Dispatch, FC, MouseEvent} from "react";
 import {connect} from "react-redux";
 import {RouteComponentProps, withRouter} from "react-router";
 import {Link} from "react-router-dom";
@@ -7,7 +7,8 @@ import {ADD_AMOUNT, HIGHLITE, UNHIGHLITE} from "../../actions/action";
 import BottomSidebar from "../../components/bottomSidebar/BottomSidebar.component";
 import Buttons from "../../components/buttons/Buttons.component";
 import LeftSidebar from "../../components/leftSidebar/LeftSidebar.component";
-import type {cellTypes, valueTypes} from "../../typeScript/types";
+import Table from "../../components/table/table.component";
+import type {cellTypes, stateTypes, valueTypes} from "../../typeScript/types";
 
 import "./main.styles.css";
 
@@ -15,12 +16,12 @@ interface IMain {
     items: valueTypes;
     table: {id: string; amount: number; isHighlited: boolean}[][];
     history: RouteComponentProps["history"];
-    increase: (id: string) => {};
-    highlite: (id: string[]) => {};
-    unHighlite: () => {};
+    increase: (id: string) => void;
+    highlite: (id: string[]) => void;
+    unHighlite: () => void;
 }
 
-const MainPage: FC<IMain> = ({items, table, increase, history, highlite, unHighlite}) => {
+function MainPage({items, table, increase, history, highlite, unHighlite}: IMain) {
     if (table.length === 0) {
         history.push("/");
     }
@@ -41,6 +42,7 @@ const MainPage: FC<IMain> = ({items, table, increase, history, highlite, unHighl
         let iterateLess = hoverElementIdx === 0 ? 0 : hoverElementIdx - 1;
         let iterateMany = hoverElementIdx === tempArr.length ? tempArr.length : hoverElementIdx + 1;
 
+        // eslint-disable-next-line no-loops/no-loops
         while (cellsToHighlite.length <= items.X) {
             if (iterateLess === 0) {
                 cellsToHighlite.push(tempArr[iterateMany].id);
@@ -64,12 +66,10 @@ const MainPage: FC<IMain> = ({items, table, increase, history, highlite, unHighl
             } else {
                 cellsToHighlite.push(tempArr[iterateMany].id);
                 iterateMany + 1 === tempArr.length - 1 ? (iterateMany = tempArr.length - 1) : (iterateMany += 1);
-
                 continue;
             }
         }
-        
-        highlite(cellsToHighlite);
+        highlite(cellsToHighlite)
     };
 
     const outHoverCellHandle = () => {
@@ -82,61 +82,39 @@ const MainPage: FC<IMain> = ({items, table, increase, history, highlite, unHighl
                 MEM-CRAB React Test
             </Link>
             <div className="table-wrapper">
-                <table className="table">
-                    <tbody>
-                        
-                        {
-                            table.map(collumn => (
-                                <tr key={`_C${Math.random().toString(36).substr(2, 7)}`}>
-                                    {collumn.map(({id, amount, isHighlited}) => {
-                                        const classes = [];
-                                        if (isHighlited) {
-                                            classes.push("highlite");
-                                        }
-                                        
-                                        return (
-                                            <td
-                                                className={classes.join(" ")}
-                                                onClick={() => increase(id)}
-                                                key={id + Math.random().toString(36).substr(2, 9)}
-                                                id={id}
-                                                onMouseEnter={e => {
-                                                    inHoverCellHandle(e);
-                                                }}
-                                                onMouseLeave={outHoverCellHandle}
-                                            >
-                                                {amount}
-                                            </td>
-                                        );
-                                    })}
-                                </tr>
-                            ))
-                        }
-                        
-                    </tbody>
-                </table>
+                <Table table={table} hoverEnter={inHoverCellHandle} hoverOut={outHoverCellHandle} click={increase} />
                 <LeftSidebar />
             </div>
             <BottomSidebar />
-
             <Buttons />
         </div>
     );
-};
+}
 
-function mapStateToProps(state: {M: number; N: number; X: number; table: cellTypes[][]}) {
+function mapStateToProps(state: stateTypes, ownprops: IMain) {
     return {
         items: {M: state.M, N: state.N, X: state.X},
         table: state.table,
     };
 }
 
-function mapDispatchToProps(dispatch: (arg0: {type: string; id?: String[] | String}) => {}) {
+function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
     return {
-        increase: (id: String) => dispatch(ADD_AMOUNT(id)),
-        highlite: (id: String[]) => dispatch(HIGHLITE(id)),
+        increase: (id: string) => dispatch(ADD_AMOUNT(id)),
+        highlite: (id: string[]) => dispatch(HIGHLITE(id)),
         unHighlite: () => dispatch(UNHIGHLITE()),
     };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MainPage));
+interface MapStateToPropsTypes {
+    items: {M: number; N: number; X: number},
+    table: cellTypes[][]
+}
+
+interface MapDispatchToPropsTypes {
+    increase: (id: string) => void;
+    highlite: (id: string[]) => void;
+    unHighlite: () => void;
+}
+
+export default withRouter<RouteComponentProps<{}>, any>(connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IMain, stateTypes>(mapStateToProps, mapDispatchToProps)(MainPage));

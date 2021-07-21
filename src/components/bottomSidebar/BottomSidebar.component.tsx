@@ -1,7 +1,7 @@
 import React, {FC} from "react";
 import {connect} from "react-redux";
 
-import {cellTypes, valueTypes} from "../../typeScript/types";
+import {cellTypes, stateTypes, valueTypes} from "../../typeScript/types";
 
 import "./bottomSidebar.styles.css";
 
@@ -10,11 +10,14 @@ interface IBottom {
     table: cellTypes[][];
 }
 
+
 const calcColValue = (items: valueTypes, table: cellTypes[][]): number[] => {
     const colInfoArr: number[] = [];
 
+    // eslint-disable-next-line no-loops/no-loops
     for (let col = 0; col < items.N; col++) {
         let sumCol = 0;
+        // eslint-disable-next-line no-loops/no-loops
         for (let row = 0; row < items.M; row++) {
             sumCol = sumCol + table[row][col].amount;
         }
@@ -24,7 +27,7 @@ const calcColValue = (items: valueTypes, table: cellTypes[][]): number[] => {
     return colInfoArr;
 };
 
-const BottomSidebar: FC<IBottom> = ({items, table}) => {
+function BottomSidebar({items, table}: IBottom) {
     let genSum: {amount: number} = {amount: 0};
     if (table.length !== 0) {
         genSum = table.flat().reduce((a, b) => ({amount: a.amount + b.amount}), {
@@ -32,7 +35,7 @@ const BottomSidebar: FC<IBottom> = ({items, table}) => {
         });
     }
 
-    const colInfo: number[] = calcColValue(items, table);
+    const colInfo = calcColValue(items, table);
 
     return (
         <div className="bottom">
@@ -47,11 +50,19 @@ const BottomSidebar: FC<IBottom> = ({items, table}) => {
             {genSum ? <div className="general-sum">{genSum.amount}</div> : null}
         </div>
     );
-};
+}
 
-const stateToProps = (state: {M: number; N: number; X: number; table: cellTypes[][]}) => ({
+interface MapStateToPropsTypes {
+    items: {M: number; N: number; X: number},
+    table: cellTypes[][]
+}
+
+const stateToProps = (state: stateTypes) => ({
     items: {M: state.M, N: state.N, X: state.X},
     table: state.table,
 });
 
-export default connect(stateToProps)(BottomSidebar);
+// withRouter<RouteComponentProps<{}>, any>(connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IMain, stateTypes>(mapStateToProps, mapDispatchToProps)(MainPage));
+
+
+export default connect<IBottom, MapStateToPropsTypes, {}, stateTypes>(stateToProps)(BottomSidebar);

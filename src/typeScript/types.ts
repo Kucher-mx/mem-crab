@@ -3,11 +3,9 @@ type stateTypes = {
     M: number;
     N: number;
     X: number;
-    table: {
-        id: string;
-        amount: number;
-        isHighlited: boolean;
-    }[][];
+    table: cellTypes[][];
+    rowSum: rowSumTypes[];
+    colAverage: number[];
 };
 type cellTypes = {id: string; amount: number; isHighlited: boolean};
 type actionTypes = {table: cellTypes[][], consts: valueTypes}

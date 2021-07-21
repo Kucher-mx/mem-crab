@@ -1,19 +1,19 @@
-import React, {FC, MouseEvent} from "react";
+import React, {Dispatch,FC, MouseEvent} from "react";
 import {connect} from "react-redux";
-import {withRouter} from "react-router";
+import {RouteComponentProps,withRouter} from "react-router";
 
 import {HIGHLITE_SUM, UNHIGHLITE_SUM} from "../../actions/action";
-import {rowSumTypes} from "../../typeScript/types";
+import {rowSumTypes, stateTypes} from "../../typeScript/types";
 
 import "./leftSidebar.styles.css";
 
 interface ILeftSidebar {
     rowSum: rowSumTypes[];
-    highlite_sum: (id: string) => {};
-    unHighlite_sum: () => {};
+    highlite_sum: (id: string) => void;
+    unHighlite_sum: () => void;
 }
 
-const LeftSidebar: FC<ILeftSidebar> = ({rowSum, highlite_sum, unHighlite_sum}) => {
+function LeftSidebar({rowSum, highlite_sum, unHighlite_sum}: ILeftSidebar) {
     const inHoverSumHandle = (e: MouseEvent) => {
         highlite_sum(e.currentTarget.id);
     };
@@ -49,18 +49,29 @@ const LeftSidebar: FC<ILeftSidebar> = ({rowSum, highlite_sum, unHighlite_sum}) =
             })}
         </div>
     );
-};
+}
 
-const stateToProps = (state: {M: number; N: number; X: number; rowSum: rowSumTypes[]}) => ({
+interface MapStateToPropsTypes {
+    items: {M: number; N: number; X: number},
+    rowSum: rowSumTypes[]
+}
+
+interface MapDispatchToPropsTypes {
+    highlite_sum: (id: string) => void;
+    unHighlite_sum: () => void;
+}
+
+const stateToProps = (state: stateTypes) => ({
     items: {M: state.M, N: state.N, X: state.X},
     rowSum: state.rowSum,
 });
 
-function mapDispatchToProps(dispatch: (arg0: {type: string; id?: string}) => {}) {
+function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
     return {
         highlite_sum: (id: string) => dispatch(HIGHLITE_SUM(id)),
         unHighlite_sum: () => dispatch(UNHIGHLITE_SUM()),
     };
 }
 
-export default withRouter(connect(stateToProps, mapDispatchToProps)(LeftSidebar));
+
+export default withRouter<RouteComponentProps<{}>, any>(connect<MapStateToPropsTypes, MapDispatchToPropsTypes, ILeftSidebar, stateTypes>(stateToProps, mapDispatchToProps)(LeftSidebar));

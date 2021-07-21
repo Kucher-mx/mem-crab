@@ -1,8 +1,14 @@
-import types from "../actions/actionTypes";
 import {actionTypes, cellTypes, rowSumTypes} from "../typeScript/types";
 import {addRow, calcColAverage, calcRowSum} from "../utils/utils";
 
-const initialState: {M: number; N: number; X: number; table: []; rowSum: rowSumTypes[]; colAverage: []} = {
+const initialState: {
+    M: number;
+    N: number;
+    X: number;
+    table: cellTypes[][];
+    rowSum: rowSumTypes[];
+    colAverage: number[];
+} = {
     M: 0,
     N: 0,
     X: 0,
@@ -12,6 +18,7 @@ const initialState: {M: number; N: number; X: number; table: []; rowSum: rowSumT
 };
 
 const reducer = (
+    // eslint-disable-next-line default-param-last
     state: {
         M: number;
         N: number;
@@ -20,34 +27,42 @@ const reducer = (
         rowSum: rowSumTypes[];
         colAverage: number[];
     } = initialState,
-    actions: {type: string; value?: actionTypes; id?: string | string[]}
+    actions:
+        | {type: "ADD_AMOUNT"; value: string}
+        | {type: "HIGHLITE"; value: string}
+        | {type: "UNHIGHLITE"}
+        | {type: "SET_CONSTS"; value: actionTypes}
+        | {type: "HIGHlITE_SUM"; value: string}
+        | {type: "ADD_ROW"; value: string}
+        | {type: "REMOVE_ROW"}
+        | {type: "UNHIGHlITE_SUM"}
 ) => {
-    switch (actions.type) {
-        case types.ADD_AMOUNT:
-            if (actions.value) {
-                return {
-                    ...state,
-                    table: state.table.map((arr: cellTypes[]) => {
-                        arr.map((cell: cellTypes) => {
-                            if (cell.id === actions.id) {
-                                cell.amount++;
-                            }
-                            return cell;
-                        });
-                        return arr;
-                    }),
-                    rowSum: calcRowSum(actions.value.consts.M, actions.value.consts.N, actions.value.table),
-                    colAverage: calcColAverage(actions.value.consts.M, actions.value.consts.N, actions.value.table),
-                };
-            }
-            return state;
+    let stateModifications: cellTypes[][] = state.table;
 
-        case types.HIGHLITE:
+    switch (actions.type) {
+        case "ADD_AMOUNT":
+            stateModifications = state.table.map((arr: cellTypes[]) => {
+                arr.map((cell: cellTypes) => {
+                    if (cell.id === actions.value) {
+                        cell.amount++;
+                    }
+                    return cell;
+                });
+                return arr;
+            });
+            return {
+                ...state,
+                table: stateModifications,
+                rowSum: calcRowSum(state.M, state.N, stateModifications),
+                colAverage: calcColAverage(state.M, state.N, stateModifications),
+            };
+
+        case "HIGHLITE":
             return {
                 ...state,
                 table: state.table.map(arr => {
                     arr.map(el => {
-                        if(actions.id?.includes(el.id)){
+                        if (actions.value.includes(el.id)) {
                             el.isHighlited = true;
                         }
                         return el;
@@ -56,7 +71,7 @@ const reducer = (
                 }),
             };
 
-        case types.UNHIGHLITE:
+        case "UNHIGHLITE":
             return {
                 ...state,
                 table: state.table.map((arr: cellTypes[]) => {
@@ -70,7 +85,7 @@ const reducer = (
                 }),
             };
 
-        case types.SET_CONSTS:
+        case "SET_CONSTS":
             if (actions.value) {
                 return {
                     ...state,
@@ -84,44 +99,44 @@ const reducer = (
             }
             return state;
 
-        case types.ADD_ROW:
-            const addRowTable = addRow(state.table, state.N);
+        case "ADD_ROW":
+            stateModifications = addRow(state.table, state.N);
 
             return {
                 ...state,
-                table: addRowTable,
+                table: stateModifications,
                 M: Number(state.M) + 1,
-                rowSum: calcRowSum(state.M, state.N, addRowTable),
-                colAverage: calcColAverage(state.M, state.N, addRowTable),
+                rowSum: calcRowSum(state.M, state.N, stateModifications),
+                colAverage: calcColAverage(state.M, state.N, stateModifications),
             };
 
-        case types.REMOVE_ROW:
+        case "REMOVE_ROW":
             if (state.table.length === 1) {
                 return {...state};
             }
 
-            const removeTable = state.table.filter((_, idx) => idx < state.table.length - 1);
+            stateModifications = state.table.filter((_, idx) => idx < state.table.length - 1);
 
             return {
                 ...state,
                 M: state.M - 1,
-                table: removeTable,
-                rowSum: calcRowSum(state.M, state.N, removeTable),
-                colAverage: calcColAverage(state.M - 1, state.N, removeTable),
+                table: stateModifications,
+                rowSum: calcRowSum(state.M, state.N, stateModifications),
+                colAverage: calcColAverage(state.M - 1, state.N, stateModifications),
             };
 
-        case types.HIGHlITE_SUM:
+        case "HIGHlITE_SUM":
             return {
                 ...state,
                 rowSum: state.rowSum.map(item => {
-                    if (item.id === actions.id) {
+                    if (item.id === actions.value) {
                         item.isHoveredSum = true;
                     }
                     return item;
                 }),
             };
 
-        case types.UNHIGHlITE_SUM:
+        case "UNHIGHlITE_SUM":
             return {
                 ...state,
                 rowSum: state.rowSum.map(item => {

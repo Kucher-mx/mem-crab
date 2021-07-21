@@ -6,13 +6,13 @@ const ADD_ROW = () => ({type: "ADD_ROW"});
 
 const REMOVE_ROW = () => ({type: "REMOVE_ROW"});
 
-const ADD_AMOUNT = (id: String) => ({type: "ADD_AMOUNT", id});
+const ADD_AMOUNT = (id: string) => ({type: "ADD_AMOUNT", value: id});
 
-const HIGHLITE = (id: String[]) => ({type: "HIGHLITE", id});
+const HIGHLITE = (id: string[]) => ({type: "HIGHLITE", value: id});
 
 const UNHIGHLITE = () => ({type: "UNHIGHLITE"});
 
-const HIGHLITE_SUM = (id: string) => ({type: "HIGHlITE_SUM", id});
+const HIGHLITE_SUM = (id: string) => ({type: "HIGHlITE_SUM", value: id});
 
 const UNHIGHLITE_SUM = () => ({type: "UNHIGHlITE_SUM"});
 

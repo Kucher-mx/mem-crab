@@ -9,11 +9,17 @@ import reducer from "./reducer/reducer";
 
 import "./index.css";
 
+declare global {
+    interface Window{
+        __REDUX_DEVTOOLS_EXTENSION__: any
+    }
+}
+
 const store = createStore(
     reducer,
     compose(
-        (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
-            (window as any).__REDUX_DEVTOOLS_EXTENSION__()
+        window.__REDUX_DEVTOOLS_EXTENSION__ &&
+            window.__REDUX_DEVTOOLS_EXTENSION__()
     )
 );
 

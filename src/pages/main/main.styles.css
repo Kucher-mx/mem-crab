@@ -1,8 +1,13 @@
 .main-page {
-    width: 100%;
-    height: 100vh;
+    /* width: 100%;
+    height: 100vh; */
+    min-width: 100%;
+    min-height: 100vh;
+    width: fit-content;
+    height: fit-content;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
     background: linear-gradient(#e66465, #9198e5);
     overflow: scroll;
@@ -27,7 +32,9 @@
   text-align: center;
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse: collapse;
-  width: 80%;
+  /* width: 80%; */
+  width: fit-content;
+  height: fit-content;
 }
 
 .table td, .table th {
@@ -35,9 +42,9 @@
   padding: 8px;
 }
 
-.table td{
+/* .table td{
   transition: all 0.45s ease-in;
-}
+} */
 
 .highlite {
   background-color: rgba(238, 40, 49, 0.576);

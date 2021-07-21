@@ -8,6 +8,7 @@ export const addRow = (table: cellTypes[][], rowLength: number): cellTypes[][] =
     const newTable: cellTypes[][] = [...table];
     newTable.push([]);
 
+    // eslint-disable-next-line no-loops/no-loops
     for (let i = 0; i < rowLength; i++) {
         newTable[newTable.length - 1].push({
             id: generateID(),
@@ -21,9 +22,10 @@ export const addRow = (table: cellTypes[][], rowLength: number): cellTypes[][] =
 
 export const calcColAverage = (M: number, N: number, table: cellTypes[][]): number[] => {
     const colInfoArr: number[] = [];
-
+    // eslint-disable-next-line no-loops/no-loops
     for (let col = 0; col < N; col++) {
         let sumCol = 0;
+        // eslint-disable-next-line no-loops/no-loops
         for (let row = 0; row < M; row++) {
             sumCol = sumCol + table[row][col].amount;
         }
