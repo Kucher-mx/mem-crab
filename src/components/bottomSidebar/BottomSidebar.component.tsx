@@ -1,68 +1,56 @@
 import React, {FC} from "react";
 import {connect} from "react-redux";
 
-import {cellTypes, stateTypes, valueTypes} from "../../typeScript/types";
+import {cellTypes, rowSumTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
+import { calcColAverage } from "../../utils/utils";
 
 import "./bottomSidebar.styles.css";
 
 interface IBottom {
     items: valueTypes;
-    table: cellTypes[][];
+    elements: cellTypes[];
+    table: tableTypes[];
+    rowSum: rowSumTypes[];
 }
 
-
-const calcColValue = (items: valueTypes, table: cellTypes[][]): number[] => {
-    const colInfoArr: number[] = [];
-
-    // eslint-disable-next-line no-loops/no-loops
-    for (let col = 0; col < items.N; col++) {
-        let sumCol = 0;
-        // eslint-disable-next-line no-loops/no-loops
-        for (let row = 0; row < items.M; row++) {
-            sumCol = sumCol + table[row][col].amount;
-        }
-        colInfoArr.push(Math.round(sumCol / items.M));
+function BottomSidebar({items, elements, table, rowSum}: IBottom) {
+    let genSum: {genSum: number} = {genSum: 0};
+    if (elements.length !== 0) {
+        genSum = rowSum
+            .reduce((a, b) => ({genSum: a.genSum + b.rowSum}), {
+                genSum: 0,
+            });
     }
 
-    return colInfoArr;
-};
-
-function BottomSidebar({items, table}: IBottom) {
-    let genSum: {amount: number} = {amount: 0};
-    if (table.length !== 0) {
-        genSum = table.flat().reduce((a, b) => ({amount: a.amount + b.amount}), {
-            amount: 0,
-        });
-    }
-
-    const colInfo = calcColValue(items, table);
+    const colInfo = calcColAverage(items.M, items.N, table);
 
     return (
         <div className="bottom">
             <div className="bottom-sidebar" style={{gridTemplateColumns: `repeat(${items.N}, 1fr)`}}>
-                {colInfo.map((num) => (
-                    <div key={`_${num + Math.random().toString(36).substr(2, 7)}`} className="cell">
-                        {num}
+                {colInfo.map(({amount, id}) => (
+                    <div key={`_${id}`} className="cell">
+                        {amount}
                     </div>
                 ))}
             </div>
 
-            {genSum ? <div className="general-sum">{genSum.amount}</div> : null}
+            {genSum ? <div className="general-sum">{genSum.genSum}</div> : null}
         </div>
     );
 }
 
 interface MapStateToPropsTypes {
-    items: {M: number; N: number; X: number},
-    table: cellTypes[][]
+    items: {M: number; N: number; X: number};
+    elements: cellTypes[];
+    rowSum: rowSumTypes[],
+    table: tableTypes[];
 }
 
 const stateToProps = (state: stateTypes) => ({
     items: {M: state.M, N: state.N, X: state.X},
-    table: state.table,
+    elements: state.elements,
+    rowSum: state.rowSum,
+    table: state.table
 });
-
-// withRouter<RouteComponentProps<{}>, any>(connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IMain, stateTypes>(mapStateToProps, mapDispatchToProps)(MainPage));
-
 
 export default connect<IBottom, MapStateToPropsTypes, {}, stateTypes>(stateToProps)(BottomSidebar);

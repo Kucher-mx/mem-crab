@@ -7,31 +7,21 @@ interface ICell {
     id: string;
     mouseEnter: (e: MouseEvent) => void;
     mouseLeave: () => void,
-    highlite: boolean
+    highlite: boolean,
 }
 
-class Cell extends React.Component<ICell>{
-    shouldComponentUpdate(nextProps: ICell){
-        if(this.props.highlite === nextProps.highlite){
-            return false
-        }
-        return true
-    }
-
-    render(){
-        const {classes, onClickHandler, amount, id, mouseEnter, mouseLeave} = this.props;
-        return (
-            <td
-                className={classes}
-                onClick={e => onClickHandler(e.currentTarget.id)}
-                id={id}
-                onMouseEnter={e => mouseEnter(e)}
-                onMouseLeave={() => mouseLeave()}
-            >
-                {amount}
-            </td>
-        );
-    }
+function Cell ({classes, onClickHandler, amount, id, mouseEnter, mouseLeave}: ICell){
+    return (
+        <td
+            className={classes}
+            onClick={e => onClickHandler(e.currentTarget.id)}
+            id={id}
+            onMouseEnter={e => mouseEnter(e)}
+            onMouseLeave={() => mouseLeave()}
+        >
+            {amount}
+        </td>
+    );
 }
 
 export default Cell;

@@ -1,11 +1,11 @@
-import React, {FC, MouseEvent} from "react";
+import * as React from "react";
 
-import {cellTypes} from "../../typeScript/types";
+import {tableTypes} from "../../typeScript/types";
 import TableRow from "../tableRow/TableRow.component";
 
 interface ITable {
-    table: cellTypes[][];
-    hoverEnter: (e: MouseEvent) => void;
+    table: tableTypes[];
+    hoverEnter: (e: React.MouseEvent) => void;
     hoverOut: () => void;
     click: (id: string) => void;
 }
@@ -14,9 +14,9 @@ function Table({table, hoverOut, hoverEnter, click}: ITable) {
     return (
         <table className="table">
             <tbody>
-                {table.map(row => (
+                {table.map(({row, id}) => (
                     <TableRow
-                        key={`_${row[0].id}`}
+                        key={id}
                         row={row}
                         hoverEnter={hoverEnter}
                         hoverOut={hoverOut}

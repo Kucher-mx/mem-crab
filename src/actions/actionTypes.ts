@@ -1,4 +1,4 @@
-const types = {
+export const ActionTypes  = {
     ADD_AMOUNT: "ADD_AMOUNT",
     HIGHLITE: "HIGHLITE",
     UNHIGHLITE: "UNHIGHLITE",
@@ -8,5 +8,3 @@ const types = {
     HIGHlITE_SUM: "HIGHlITE_SUM",
     UNHIGHlITE_SUM: "UNHIGHlITE_SUM",
 } as const;
-
-export default types;

@@ -1,6 +1,5 @@
 import React, {Dispatch,FC, MouseEvent} from "react";
 import {connect} from "react-redux";
-import {RouteComponentProps,withRouter} from "react-router";
 
 import {HIGHLITE_SUM, UNHIGHLITE_SUM} from "../../actions/action";
 import {rowSumTypes, stateTypes} from "../../typeScript/types";
@@ -33,7 +32,7 @@ function LeftSidebar({rowSum, highlite_sum, unHighlite_sum}: ILeftSidebar) {
                 return (
                     <div
                         id={item.id}
-                        key={`_${item.rowSum + item.rowPersent}`}
+                        key={item.id}
                         className="sum-cell"
                         onMouseEnter={e => {
                             inHoverSumHandle(e);
@@ -74,4 +73,4 @@ function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
 }
 
 
-export default withRouter<RouteComponentProps<{}>, any>(connect<MapStateToPropsTypes, MapDispatchToPropsTypes, ILeftSidebar, stateTypes>(stateToProps, mapDispatchToProps)(LeftSidebar));
+export default connect<MapStateToPropsTypes, MapDispatchToPropsTypes, ILeftSidebar, stateTypes>(stateToProps, mapDispatchToProps)(LeftSidebar);

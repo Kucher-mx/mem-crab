@@ -1,6 +1,5 @@
 import React, {Dispatch, FC} from "react";
 import {connect} from "react-redux";
-import {RouteComponentProps, withRouter} from "react-router";
 
 import {ADD_ROW, REMOVE_ROW} from "../../actions/action";
 import {stateTypes} from "../../typeScript/types";
@@ -37,6 +36,4 @@ function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
     };
 }
 
-export default withRouter<RouteComponentProps<{}>, any>(
-    connect<IButtons, MapDispatchToPropsTypes, {}, stateTypes>(null, mapDispatchToProps)(Buttons)
-);
+export default connect<IButtons, MapDispatchToPropsTypes, {}, stateTypes>(null, mapDispatchToProps)(Buttons);

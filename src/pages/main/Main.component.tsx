@@ -1,6 +1,6 @@
 import React, {Dispatch, FC, MouseEvent} from "react";
 import {connect} from "react-redux";
-import {RouteComponentProps, withRouter} from "react-router";
+import {useNavigate} from "react-router";
 import {Link} from "react-router-dom";
 
 import {ADD_AMOUNT, HIGHLITE, UNHIGHLITE} from "../../actions/action";
@@ -8,30 +8,30 @@ import BottomSidebar from "../../components/bottomSidebar/BottomSidebar.componen
 import Buttons from "../../components/buttons/Buttons.component";
 import LeftSidebar from "../../components/leftSidebar/LeftSidebar.component";
 import Table from "../../components/table/table.component";
-import type {cellTypes, stateTypes, valueTypes} from "../../typeScript/types";
+import type {cellTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
 
 import "./main.styles.css";
 
 interface IMain {
     items: valueTypes;
-    table: {id: string; amount: number; isHighlited: boolean}[][];
-    history: RouteComponentProps["history"];
+    table: tableTypes[];
     increase: (id: string) => void;
     highlite: (id: string[]) => void;
     unHighlite: () => void;
 }
 
-function MainPage({items, table, increase, history, highlite, unHighlite}: IMain) {
+function MainPage({items, table, increase, highlite, unHighlite}: IMain) {
+    const navigate = useNavigate();
     if (table.length === 0) {
-        history.push("/");
+        navigate("/");
     }
 
     const inHoverCellHandle = (e: MouseEvent) => {
         const cellsToHighlite: string[] = [];
         let tempArr: cellTypes[] = [];
 
-        table.forEach(subArr => {
-            tempArr = tempArr.concat(subArr);
+        table.forEach(({row}) => {
+            tempArr = tempArr.concat(row);
         });
         tempArr.sort((a, b) => a.amount - b.amount);
 
@@ -69,7 +69,7 @@ function MainPage({items, table, increase, history, highlite, unHighlite}: IMain
                 continue;
             }
         }
-        highlite(cellsToHighlite)
+        highlite(cellsToHighlite);
     };
 
     const outHoverCellHandle = () => {
@@ -83,7 +83,11 @@ function MainPage({items, table, increase, history, highlite, unHighlite}: IMain
             </Link>
             <div className="table-wrapper">
                 <Table table={table} hoverEnter={inHoverCellHandle} hoverOut={outHoverCellHandle} click={increase} />
-                <LeftSidebar />
+
+                {
+                    // @ts-ignore
+                    <LeftSidebar />
+                }
             </div>
             <BottomSidebar />
             <Buttons />
@@ -107,8 +111,8 @@ function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
 }
 
 interface MapStateToPropsTypes {
-    items: {M: number; N: number; X: number},
-    table: cellTypes[][]
+    items: {M: number; N: number; X: number};
+    table: tableTypes[];
 }
 
 interface MapDispatchToPropsTypes {
@@ -117,4 +121,9 @@ interface MapDispatchToPropsTypes {
     unHighlite: () => void;
 }
 
-export default withRouter<RouteComponentProps<{}>, any>(connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IMain, stateTypes>(mapStateToProps, mapDispatchToProps)(MainPage));
+// export default withRouter<RouteComponentProps<{}>, any>(connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IMain, stateTypes>(mapStateToProps, mapDispatchToProps)(MainPage));
+
+export default connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IMain, stateTypes>(
+    mapStateToProps,
+    mapDispatchToProps
+)(MainPage);

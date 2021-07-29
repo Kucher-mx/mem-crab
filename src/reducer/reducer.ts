@@ -1,47 +1,35 @@
-import {actionTypes, cellTypes, rowSumTypes, tableTypes} from "../typeScript/types";
+import {ActionTypes} from "../actions/actionTypes";
+import {cellTypes, stateTypes, tableTypes} from "../typeScript/types";
 import {addRow, calcColAverage, calcRowSum} from "../utils/utils";
 
-const initialState: {
-    M: number;
-    N: number;
-    X: number;
-    table: tableTypes[];
-    rowSum: rowSumTypes[];
-    colAverage: number[];
-} = {
+const initialState: stateTypes = {
     M: 0,
     N: 0,
     X: 0,
     table: [],
     rowSum: [],
     colAverage: [],
+    elements: [],
 };
 
 const reducer = (
     // eslint-disable-next-line default-param-last
-    state: {
-        M: number;
-        N: number;
-        X: number;
-        table: tableTypes[];
-        rowSum: rowSumTypes[];
-        colAverage: number[];
-    } = initialState,
+    state: stateTypes = initialState,
     actions:
-        | {type: "ADD_AMOUNT"; value: string}
-        | {type: "HIGHLITE"; value: string}
-        | {type: "UNHIGHLITE"}
-        | {type: "SET_CONSTS"; value: actionTypes}
-        | {type: "HIGHlITE_SUM"; value: string}
-        | {type: "ADD_ROW"; value: string}
-        | {type: "REMOVE_ROW"}
-        | {type: "UNHIGHlITE_SUM"}
+        | {type: typeof ActionTypes.ADD_AMOUNT; value: string}
+        | {type: typeof ActionTypes.HIGHLITE; value: string}
+        | {type: typeof ActionTypes.UNHIGHLITE}
+        | {type: typeof ActionTypes.SET_CONSTS; value: stateTypes}
+        | {type: typeof ActionTypes.HIGHlITE_SUM; value: string}
+        | {type: typeof ActionTypes.ADD_ROW; value: string}
+        | {type: typeof ActionTypes.REMOVE_ROW}
+        | {type: typeof ActionTypes.UNHIGHlITE_SUM}
 ) => {
-    let stateModifications: tableTypes[] = state.table;
+    let stateModifications: {newTable: tableTypes[]} = {newTable: state.table};
 
     switch (actions.type) {
-        case "ADD_AMOUNT":
-            stateModifications = state.table.map((arr: tableTypes) => {
+        case ActionTypes.ADD_AMOUNT:
+            stateModifications.newTable = state.table.map((arr: tableTypes) => {
                 arr.row.map((cell: cellTypes) => {
                     if (cell.id === actions.value) {
                         cell.amount++;
@@ -52,12 +40,15 @@ const reducer = (
             });
             return {
                 ...state,
-                table: stateModifications,
-                rowSum: calcRowSum(state.M, state.N, stateModifications),
-                colAverage: calcColAverage(state.M, state.N, stateModifications),
+                table: stateModifications.newTable,
+                rowSum: calcRowSum(state.M, state.N, stateModifications.newTable),
+                colAverage: calcColAverage(state.M, state.N, stateModifications.newTable),
+                elements: stateModifications.newTable
+                    .reduce((a: cellTypes[], b) => a.concat(b.row), [])
+                    .sort((a, b) => a.amount - b.amount),
             };
 
-        case "HIGHLITE":
+        case ActionTypes.HIGHLITE:
             return {
                 ...state,
                 table: state.table.map(arr => {
@@ -71,10 +62,10 @@ const reducer = (
                 }),
             };
 
-        case "UNHIGHLITE":
+        case ActionTypes.UNHIGHLITE:
             return {
                 ...state,
-                table: state.table.map((arr: tableTypes) => {
+                table: state.table.map(arr => {
                     arr.row.map((el: cellTypes) => {
                         if (el.isHighlited) {
                             el.isHighlited = false;
@@ -85,47 +76,50 @@ const reducer = (
                 }),
             };
 
-        case "SET_CONSTS":
-            if (actions.value) {
-                return {
-                    ...state,
-                    table: actions.value.table,
-                    rowSum: calcRowSum(actions.value.consts.M, actions.value.consts.N, actions.value.table),
-                    colAverage: calcColAverage(actions.value.consts.M, actions.value.consts.N, actions.value.table),
-                    M: actions.value.consts.M,
-                    N: actions.value.consts.N,
-                    X: actions.value.consts.X,
-                };
-            }
-            return state;
-
-        case "ADD_ROW":
-            stateModifications = addRow(state.table, state.N);
-
+        case ActionTypes.SET_CONSTS:
             return {
                 ...state,
-                table: stateModifications,
-                M: Number(state.M) + 1,
-                rowSum: calcRowSum(state.M, state.N, stateModifications),
-                colAverage: calcColAverage(state.M, state.N, stateModifications),
+                table: actions.value.table,
+                rowSum: actions.value.rowSum,
+                colAverage: actions.value.colAverage,
+                M: actions.value.M,
+                N: actions.value.N,
+                X: actions.value.X,
+                elements: actions.value.elements,
             };
 
-        case "REMOVE_ROW":
+        case ActionTypes.ADD_ROW:
+            stateModifications = addRow(state.table, state.N);
+            return {
+                ...state,
+                table: stateModifications.newTable,
+                M: Number(state.M) + 1,
+                rowSum: calcRowSum(state.M, state.N, stateModifications.newTable),
+                colAverage: calcColAverage(state.M, state.N, stateModifications.newTable),
+                elements: stateModifications.newTable
+                    .reduce((a: cellTypes[], b) => a.concat(b.row), [])
+                    .sort((a, b) => a.amount - b.amount),
+            };
+
+        case ActionTypes.REMOVE_ROW:
             if (state.table.length === 1) {
                 return {...state};
             }
 
-            stateModifications = state.table.filter((_, idx) => idx < state.table.length - 1);
+            stateModifications.newTable = state.table.filter((_, idx) => idx < state.table.length - 1);
 
             return {
                 ...state,
                 M: state.M - 1,
-                table: stateModifications,
-                rowSum: calcRowSum(state.M, state.N, stateModifications),
-                colAverage: calcColAverage(state.M - 1, state.N, stateModifications),
+                table: stateModifications.newTable,
+                rowSum: calcRowSum(state.M, state.N, stateModifications.newTable),
+                colAverage: calcColAverage(state.M - 1, state.N, stateModifications.newTable),
+                elements: stateModifications.newTable
+                    .reduce((a: cellTypes[], b) => a.concat(b.row), [])
+                    .sort((a, b) => a.amount - b.amount),
             };
 
-        case "HIGHlITE_SUM":
+        case ActionTypes.HIGHlITE_SUM:
             return {
                 ...state,
                 rowSum: state.rowSum.map(item => {
@@ -136,7 +130,7 @@ const reducer = (
                 }),
             };
 
-        case "UNHIGHlITE_SUM":
+        case ActionTypes.UNHIGHlITE_SUM:
             return {
                 ...state,
                 rowSum: state.rowSum.map(item => {

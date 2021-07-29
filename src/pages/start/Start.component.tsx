@@ -1,37 +1,43 @@
-import React, {Dispatch,FC,FormEvent, useRef} from "react";
-import {connect} from "react-redux";
-import {RouteComponentProps, withRouter} from "react-router";
+import * as React from "react";
+import { Dispatch } from "react";
+import { connect } from "react-redux";
+import {useNavigate} from "react-router";
 
-import {SET_CONSTS} from "../../actions/action";
-import type {cellTypes, stateTypes, valueTypes} from "../../typeScript/types";
-import {generateTable} from "./start.utils";
+import { SET_CONSTS } from "../../actions/action";
+import { cellTypes, stateTypes, tableTypes, valueTypes } from "../../typeScript/types";
+import { genState } from "./start.utils";
 
 import "./start.styles.css";
 
 interface IStart {
-    history: RouteComponentProps["history"];
-    setConsts: (value: {table: cellTypes[][]; consts: valueTypes}) => void;
+    setConsts: (value: stateTypes) => void;
 }
 
-function StartPage({history, setConsts}: IStart) {
-    const refM = useRef<HTMLInputElement>(null);
-    const refN = useRef<HTMLInputElement>(null);
-    const refX = useRef<HTMLInputElement>(null);
+function StartPage({setConsts}: IStart) {
+    const navigate = useNavigate();
+    const [state, setState] = React.useState({M: '', N: '', X: ''})
 
-    const handleSubmit = (e: FormEvent) => {
+    const onChangeInputHandler = (e: React.FormEvent<HTMLInputElement>) => {
+        e.persist();
+        const {name, value} = e.currentTarget
+        setState({...state, [name]: Number(value)})
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const value: valueTypes = {M: 0, N: 0, X: 0};
-        if (refM && refM.current && refN && refN.current && refX && refX.current) {
-            value.M = Number(refM.current.value);
-            value.N = Number(refN.current.value);
-            value.X = Number(refX.current.value);
-        }
-
-        if (value.X > value.M * value.N - 1 || value.M < 0 || value.N < 0) {
-            window.location.reload();
-        } else {
-            setConsts(generateTable(value));
-            history.push("/app");
+    
+        const {M, N, X} = state;
+        if(M && N && X){
+            if(Number(M) <= 0 || Number(N) <= 0 || Number(X) <= 0 || Number(M) + Number(N) < Number(X)){
+                setState({M: '', N: '', X: ''})
+            }else{
+                console.log(genState(state));
+                
+                    setConsts(genState(state))
+                    navigate(`/app`)
+            }
+        }else{
+            setState({M: '', N: '', X: ''})
         }
     };
 
@@ -41,17 +47,17 @@ function StartPage({history, setConsts}: IStart) {
                 <div className="label-wrapper">
                     <label>
                         M:
-                        <input type="number" required ref={refM} />
+                        <input type="number" name='M' required value={state.M} onChange={(e) => onChangeInputHandler(e)} />
                     </label>
 
                     <label>
                         N:
-                        <input type="number" required ref={refN} />
+                        <input type="number" name='N' required value={state.N} onChange={(e) => onChangeInputHandler(e)} />
                     </label>
 
                     <label>
                         X:
-                        <input type="number" required ref={refX} />
+                        <input type="number" name='X' required value={state.X} onChange={(e) => onChangeInputHandler(e)} />
                     </label>
                 </div>
                 <button type="submit">sumbit</button>
@@ -61,12 +67,12 @@ function StartPage({history, setConsts}: IStart) {
 }
 
 interface MapDispatchToPropsTypes {
-    setConsts: (value: {table: cellTypes[][]; consts: valueTypes}) => void;
+    setConsts: (value: stateTypes) => void;
 }
 
 const mapDispatchToProps = (
     dispatch: Dispatch<{type: string; table?: cellTypes[][]; consts?: valueTypes}>) => ({
-    setConsts: (value: {table: cellTypes[][]; consts: valueTypes}) => dispatch(SET_CONSTS(value)),
+    setConsts: (value: stateTypes) => dispatch(SET_CONSTS(value)),
 });
 
-export default withRouter<RouteComponentProps<{}>, any>(connect<IStart, MapDispatchToPropsTypes, {}, stateTypes>(null, mapDispatchToProps)(StartPage));
+export default connect<IStart, MapDispatchToPropsTypes, {}, stateTypes>(null, mapDispatchToProps)(StartPage);
