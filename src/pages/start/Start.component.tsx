@@ -31,10 +31,8 @@ function StartPage({setConsts}: IStart) {
             if(Number(M) <= 0 || Number(N) <= 0 || Number(X) <= 0 || Number(M) + Number(N) < Number(X)){
                 setState({M: '', N: '', X: ''})
             }else{
-                console.log(genState(state));
-                
-                    setConsts(genState(state))
-                    navigate(`/app`)
+                setConsts(genState(state))
+                navigate(`/app`)
             }
         }else{
             setState({M: '', N: '', X: ''})
