@@ -8,7 +8,8 @@ type stateTypes = {
     colAverage: number[];
 };
 type cellTypes = {id: string; amount: number; isHighlited: boolean};
-type actionTypes = {table: cellTypes[][], consts: valueTypes}
+type actionTypes = {table: tableTypes[], consts: valueTypes}
 type rowSumTypes = {rowSum: number, rowPersent: number, isHoveredSum: boolean, id: string}
+type tableTypes = {id: string; row: cellTypes[]}
 
-export type {actionTypes,cellTypes,rowSumTypes,stateTypes, valueTypes};
+export type {actionTypes,cellTypes,rowSumTypes,stateTypes, tableTypes,valueTypes};

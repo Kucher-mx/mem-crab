@@ -1,11 +1,11 @@
-import {actionTypes, cellTypes, rowSumTypes} from "../typeScript/types";
+import {actionTypes, cellTypes, rowSumTypes, tableTypes} from "../typeScript/types";
 import {addRow, calcColAverage, calcRowSum} from "../utils/utils";
 
 const initialState: {
     M: number;
     N: number;
     X: number;
-    table: cellTypes[][];
+    table: tableTypes[];
     rowSum: rowSumTypes[];
     colAverage: number[];
 } = {
@@ -23,7 +23,7 @@ const reducer = (
         M: number;
         N: number;
         X: number;
-        table: cellTypes[][];
+        table: tableTypes[];
         rowSum: rowSumTypes[];
         colAverage: number[];
     } = initialState,
@@ -37,12 +37,12 @@ const reducer = (
         | {type: "REMOVE_ROW"}
         | {type: "UNHIGHlITE_SUM"}
 ) => {
-    let stateModifications: cellTypes[][] = state.table;
+    let stateModifications: tableTypes[] = state.table;
 
     switch (actions.type) {
         case "ADD_AMOUNT":
-            stateModifications = state.table.map((arr: cellTypes[]) => {
-                arr.map((cell: cellTypes) => {
+            stateModifications = state.table.map((arr: tableTypes) => {
+                arr.row.map((cell: cellTypes) => {
                     if (cell.id === actions.value) {
                         cell.amount++;
                     }
@@ -61,7 +61,7 @@ const reducer = (
             return {
                 ...state,
                 table: state.table.map(arr => {
-                    arr.map(el => {
+                    arr.row.map(el => {
                         if (actions.value.includes(el.id)) {
                             el.isHighlited = true;
                         }
@@ -74,8 +74,8 @@ const reducer = (
         case "UNHIGHLITE":
             return {
                 ...state,
-                table: state.table.map((arr: cellTypes[]) => {
-                    arr.map((el: cellTypes) => {
+                table: state.table.map((arr: tableTypes) => {
+                    arr.row.map((el: cellTypes) => {
                         if (el.isHighlited) {
                             el.isHighlited = false;
                         }
