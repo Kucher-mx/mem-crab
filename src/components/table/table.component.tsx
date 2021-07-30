@@ -6,7 +6,7 @@ import TableRow from "../tableRow/TableRow.component";
 interface ITable {
     table: tableTypes[];
     hoverEnter: (e: React.MouseEvent) => void;
-    hoverOut: () => void;
+    hoverOut: (e: React.MouseEvent) => void;
     click: (id: string) => void;
 }
 

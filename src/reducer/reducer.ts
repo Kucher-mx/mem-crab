@@ -18,7 +18,7 @@ const reducer = (
     actions:
         | {type: typeof ActionTypes.ADD_AMOUNT; value: string}
         | {type: typeof ActionTypes.HIGHLITE; value: string}
-        | {type: typeof ActionTypes.UNHIGHLITE}
+        | {type: typeof ActionTypes.UNHIGHLITE; value: string}
         | {type: typeof ActionTypes.SET_CONSTS; value: stateTypes}
         | {type: typeof ActionTypes.HIGHlITE_SUM; value: string}
         | {type: typeof ActionTypes.ADD_ROW; value: string}
@@ -26,7 +26,6 @@ const reducer = (
         | {type: typeof ActionTypes.UNHIGHlITE_SUM}
 ) => {
     let stateModifications: {newTable: tableTypes[]} = {newTable: state.table};
-
     switch (actions.type) {
         case ActionTypes.ADD_AMOUNT:
             stateModifications.newTable = state.table.map((arr: tableTypes) => {
@@ -66,8 +65,8 @@ const reducer = (
             return {
                 ...state,
                 table: state.table.map(arr => {
-                    arr.row.map((el: cellTypes) => {
-                        if (el.isHighlited) {
+                    arr.row.map(el => {
+                        if (actions.value.includes(el.id)) {
                             el.isHighlited = false;
                         }
                         return el;

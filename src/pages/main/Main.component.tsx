@@ -17,7 +17,7 @@ interface IMain {
     table: tableTypes[];
     increase: (id: string) => void;
     highlite: (id: string[]) => void;
-    unHighlite: () => void;
+    unHighlite: (id: string[]) => void;
 }
 
 function MainPage({items, table, increase, highlite, unHighlite}: IMain) {
@@ -26,15 +26,15 @@ function MainPage({items, table, increase, highlite, unHighlite}: IMain) {
         navigate("/");
     }
 
+    let tempArr: cellTypes[] = [];
+
+    table.forEach(({row}) => {
+        tempArr = tempArr.concat(row);
+    });
+    tempArr.sort((a, b) => a.amount - b.amount);
+
     const inHoverCellHandle = (e: MouseEvent) => {
         const cellsToHighlite: string[] = [];
-        let tempArr: cellTypes[] = [];
-
-        table.forEach(({row}) => {
-            tempArr = tempArr.concat(row);
-        });
-        tempArr.sort((a, b) => a.amount - b.amount);
-
         const hoverElementIdx = tempArr.findIndex(el => (e.currentTarget ? el.id === e.currentTarget.id : false));
 
         cellsToHighlite.push(tempArr[hoverElementIdx].id);
@@ -72,8 +72,10 @@ function MainPage({items, table, increase, highlite, unHighlite}: IMain) {
         highlite(cellsToHighlite);
     };
 
-    const outHoverCellHandle = () => {
-        unHighlite();
+    const outHoverCellHandle = (e: MouseEvent) => {
+        const cellToUnhighlite = [...tempArr.filter(el => el.isHighlited).map(el => el.id)];
+
+        unHighlite(cellToUnhighlite);
     };
 
     return (
@@ -106,7 +108,7 @@ function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
     return {
         increase: (id: string) => dispatch(ADD_AMOUNT(id)),
         highlite: (id: string[]) => dispatch(HIGHLITE(id)),
-        unHighlite: () => dispatch(UNHIGHLITE()),
+        unHighlite: (id: string[]) => dispatch(UNHIGHLITE(id)),
     };
 }
 
@@ -118,7 +120,7 @@ interface MapStateToPropsTypes {
 interface MapDispatchToPropsTypes {
     increase: (id: string) => void;
     highlite: (id: string[]) => void;
-    unHighlite: () => void;
+    unHighlite: (id: string[]) => void;
 }
 
 // export default withRouter<RouteComponentProps<{}>, any>(connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IMain, stateTypes>(mapStateToProps, mapDispatchToProps)(MainPage));

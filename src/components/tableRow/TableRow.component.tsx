@@ -6,7 +6,7 @@ import Cell from '../cell/Cell.component'
 interface iRow {
     row: cellTypes[];
     hoverEnter: (e: MouseEvent) => void;
-    hoverOut: () => void;
+    hoverOut: (e: MouseEvent) => void;
     click: (id: string) => void
 }
 

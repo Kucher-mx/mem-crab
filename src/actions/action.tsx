@@ -12,7 +12,7 @@ const ADD_AMOUNT = (id: string) => ({type: ActionTypes.ADD_AMOUNT, value: id});
 
 const HIGHLITE = (id: string[]) => ({type: ActionTypes.HIGHLITE, value: id});
 
-const UNHIGHLITE = () => ({type: ActionTypes.UNHIGHLITE});
+const UNHIGHLITE = (id: string[]) => ({type: ActionTypes.UNHIGHLITE, value: id});
 
 const HIGHLITE_SUM = (id: string) => ({type: ActionTypes.HIGHlITE_SUM, value: id});
 
