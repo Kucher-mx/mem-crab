@@ -1,6 +1,4 @@
 .main-page {
-  /* width: 100%;
-  height: 100vh; */
   min-width: 100%;
   min-height: 100vh;
   width: fit-content;
@@ -13,52 +11,44 @@
   overflow: scroll;
 }
 
-.main-page .table-wrapper{
-display: flex;
-justify-content: center;
+.main-page .table-wrapper {
+  display: flex;
+  justify-content: center;
 }
 
 .title {
-margin: 0;
-margin-bottom: 35px;
-text-align: center;
-font-family: arial, sans-serif;
-color: #000;
-font-size: 36px;
-text-decoration: none;
+  margin: 0;
+  margin-bottom: 35px;
+  text-align: center;
+  font-family: arial, sans-serif;
+  color: #000;
+  font-size: 36px;
+  text-decoration: none;
 }
 
 .table {
-text-align: center;
-font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-border-collapse: collapse;
-/* width: 80%; */
-width: fit-content;
-height: fit-content;
+  text-align: center;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: fit-content;
+  height: fit-content;
 }
 
-.table td, .table th {
-border: 1px solid #fff;
-padding: 8px;
+.table td,
+.table th {
+  border: 1px solid #fff;
+  padding: 8px;
 }
 
-/* .table td{
-transition: all 0.45s ease-in;
-} */
 
-.highlite {
-background-color: rgba(238, 40, 49, 0.576);
+.highlight {
+  background-color: rgba(238, 40, 49, 0.576);
 }
-
-/* .table tr:nth-child(even){background-color: #a686b3;} */
-
-/* .table td:hover {background-color: rgb(213, 82, 78);} */
 
 .table th {
-padding-top: 12px;
-padding-bottom: 12px;
-text-align: center;
-background-color: #4CAF50;
-color: white;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
 }
-

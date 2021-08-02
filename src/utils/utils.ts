@@ -5,16 +5,13 @@ export const getRandomInt = (): number => Math.floor(Math.random() * 899) + 100;
 export const generateID = (): string =>
     `_${Math.random().toString(36).substr(2, 9) + Math.random().toString(36).substr(2, 9)}`;
 
-export const addRow = (
-    table: tableTypes[],
-    rowLength: number
-): {newTable: tableTypes[]} => {
+export const addRow = (table: tableTypes[], rowLength: number): {newTable: tableTypes[]} => {
     const newTable: tableTypes[] = [...table];
     const rowValues = Array.from({length: rowLength}, () => ({
         id: generateID(),
         amount: getRandomInt(),
-        isHighlited: false,
-    }))
+        isHighlighted: false,
+    }));
     newTable.push({id: generateID(), row: rowValues});
 
     return {newTable};
@@ -44,8 +41,8 @@ export const calcRowSum = (M: number, N: number, table: tableTypes[]): rowSumTyp
 
     table.forEach(({row}) => {
         const arrSum: number = row.reduce((acc, b: {amount: number}) => acc + b.amount, 0);
-        const persent = Number(((arrSum * 100) / genSum).toFixed(1));
-        rowSumArr.push({rowSum: arrSum, rowPersent: persent, isHoveredSum: false, id: generateID()});
+        const percent = Number(((arrSum * 100) / genSum).toFixed(1));
+        rowSumArr.push({rowSum: arrSum, rowPercent: percent, isHoveredSum: false, id: generateID()});
     });
 
     return rowSumArr;

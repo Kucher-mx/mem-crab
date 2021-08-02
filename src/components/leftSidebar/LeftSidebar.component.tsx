@@ -1,24 +1,24 @@
-import React, {Dispatch,FC, MouseEvent} from "react";
+import React, {Dispatch, FC, MouseEvent} from "react";
 import {connect} from "react-redux";
 
-import {HIGHLITE_SUM, UNHIGHLITE_SUM} from "../../actions/action";
+import {HIGHLIGHT_SUM, UNHIGHLIGHT_SUM} from "../../actions/action";
 import {rowSumTypes, stateTypes} from "../../typeScript/types";
 
 import "./leftSidebar.styles.css";
 
-interface ILeftSidebar {
+interface IProps {
     rowSum: rowSumTypes[];
-    highlite_sum: (id: string) => void;
-    unHighlite_sum: () => void;
+    highlight_sum: (id: string) => void;
+    unHighlight_sum: () => void;
 }
 
-function LeftSidebar({rowSum, highlite_sum, unHighlite_sum}: ILeftSidebar) {
+function LeftSidebar({rowSum, highlight_sum, unHighlight_sum}: IProps): React.ReactElement<IProps> {
     const inHoverSumHandle = (e: MouseEvent) => {
-        highlite_sum(e.currentTarget.id);
+        highlight_sum(e.currentTarget.id);
     };
 
     const outHoverSumHandle = () => {
-        unHighlite_sum();
+        unHighlight_sum();
     };
 
     return (
@@ -26,7 +26,7 @@ function LeftSidebar({rowSum, highlite_sum, unHighlite_sum}: ILeftSidebar) {
             {rowSum.map(item => {
                 const backgroundStyles = item.isHoveredSum
                     ? {
-                          width: `${item.rowPersent}%`,
+                          width: `${item.rowPercent}%`,
                       }
                     : {width: `${0}%`};
                 return (
@@ -34,15 +34,11 @@ function LeftSidebar({rowSum, highlite_sum, unHighlite_sum}: ILeftSidebar) {
                         id={item.id}
                         key={item.id}
                         className="sum-cell"
-                        onMouseEnter={e => {
-                            inHoverSumHandle(e);
-                        }}
-                        onMouseLeave={e => {
-                            outHoverSumHandle();
-                        }}
+                        onMouseEnter={inHoverSumHandle}
+                        onMouseLeave={outHoverSumHandle}
                     >
                         <div className="background" style={backgroundStyles} />
-                        {item.isHoveredSum ? `${item.rowPersent}%` : item.rowSum}
+                        {item.isHoveredSum ? `${item.rowPercent}%` : item.rowSum}
                     </div>
                 );
             })}
@@ -51,13 +47,13 @@ function LeftSidebar({rowSum, highlite_sum, unHighlite_sum}: ILeftSidebar) {
 }
 
 interface MapStateToPropsTypes {
-    items: {M: number; N: number; X: number},
-    rowSum: rowSumTypes[]
+    items: {M: number; N: number; X: number};
+    rowSum: rowSumTypes[];
 }
 
 interface MapDispatchToPropsTypes {
-    highlite_sum: (id: string) => void;
-    unHighlite_sum: () => void;
+    highlight_sum: (id: string) => void;
+    unHighlight_sum: () => void;
 }
 
 const stateToProps = (state: stateTypes) => ({
@@ -67,10 +63,12 @@ const stateToProps = (state: stateTypes) => ({
 
 function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
     return {
-        highlite_sum: (id: string) => dispatch(HIGHLITE_SUM(id)),
-        unHighlite_sum: () => dispatch(UNHIGHLITE_SUM()),
+        highlight_sum: (id: string) => dispatch(HIGHLIGHT_SUM(id)),
+        unHighlight_sum: () => dispatch(UNHIGHLIGHT_SUM()),
     };
 }
 
-
-export default connect<MapStateToPropsTypes, MapDispatchToPropsTypes, ILeftSidebar, stateTypes>(stateToProps, mapDispatchToProps)(LeftSidebar);
+export default connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IProps, stateTypes>(
+    stateToProps,
+    mapDispatchToProps
+)(LeftSidebar);

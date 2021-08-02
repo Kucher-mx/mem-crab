@@ -17,13 +17,13 @@ const reducer = (
     state: stateTypes = initialState,
     actions:
         | {type: typeof ActionTypes.ADD_AMOUNT; value: string}
-        | {type: typeof ActionTypes.HIGHLITE; value: string}
-        | {type: typeof ActionTypes.UNHIGHLITE; value: string}
+        | {type: typeof ActionTypes.HIGHLIGHT; value: string}
+        | {type: typeof ActionTypes.UNHIGHLIGHT; value: string}
         | {type: typeof ActionTypes.SET_CONSTS; value: stateTypes}
-        | {type: typeof ActionTypes.HIGHlITE_SUM; value: string}
+        | {type: typeof ActionTypes.HIGHLIGHT_SUM; value: string}
         | {type: typeof ActionTypes.ADD_ROW; value: string}
         | {type: typeof ActionTypes.REMOVE_ROW}
-        | {type: typeof ActionTypes.UNHIGHlITE_SUM}
+        | {type: typeof ActionTypes.UNHIGHLIGHT_SUM}
 ) => {
     let stateModifications: {newTable: tableTypes[]} = {newTable: state.table};
     switch (actions.type) {
@@ -47,13 +47,13 @@ const reducer = (
                     .sort((a, b) => a.amount - b.amount),
             };
 
-        case ActionTypes.HIGHLITE:
+        case ActionTypes.HIGHLIGHT:
             return {
                 ...state,
                 table: state.table.map(arr => {
                     arr.row.map(el => {
                         if (actions.value.includes(el.id)) {
-                            el.isHighlited = true;
+                            el.isHighlighted = true;
                         }
                         return el;
                     });
@@ -61,13 +61,13 @@ const reducer = (
                 }),
             };
 
-        case ActionTypes.UNHIGHLITE:
+        case ActionTypes.UNHIGHLIGHT:
             return {
                 ...state,
                 table: state.table.map(arr => {
                     arr.row.map(el => {
                         if (actions.value.includes(el.id)) {
-                            el.isHighlited = false;
+                            el.isHighlighted = false;
                         }
                         return el;
                     });
@@ -118,7 +118,7 @@ const reducer = (
                     .sort((a, b) => a.amount - b.amount),
             };
 
-        case ActionTypes.HIGHlITE_SUM:
+        case ActionTypes.HIGHLIGHT_SUM:
             return {
                 ...state,
                 rowSum: state.rowSum.map(item => {
@@ -129,7 +129,7 @@ const reducer = (
                 }),
             };
 
-        case ActionTypes.UNHIGHlITE_SUM:
+        case ActionTypes.UNHIGHLIGHT_SUM:
             return {
                 ...state,
                 rowSum: state.rowSum.map(item => {

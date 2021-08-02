@@ -1,5 +1,5 @@
-import { cellTypes, stateTypes, tableTypes, valueTypes } from "../../typeScript/types"
-import { calcColAverage, calcRowSum, generateID, getRandomInt } from "../../utils/utils";
+import {cellTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
+import {calcColAverage, calcRowSum, generateID, getRandomInt} from "../../utils/utils";
 
 const generateTable = (values: valueTypes): {table: tableTypes[]; consts: valueTypes; elements: cellTypes[]} => {
     const {M, N, X} = values;
@@ -20,7 +20,7 @@ const genMatrix = (rows: number, cols: number): tableTypes[] => {
             const cell = {
                 id: generateID(),
                 amount: getRandomInt(),
-                isHighlited: false,
+                isHighlighted: false,
             };
             return cell;
         });
@@ -35,7 +35,9 @@ export const genState = (values): stateTypes => {
         table,
         rowSum: calcRowSum(consts.M, consts.N, table),
         colAverage: calcColAverage(consts.M, consts.N, table),
-        M: consts.M, N: consts.N, X: consts.X,
+        M: consts.M,
+        N: consts.N,
+        X: consts.X,
         elements,
     };
 };

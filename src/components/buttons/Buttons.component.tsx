@@ -6,12 +6,12 @@ import {stateTypes} from "../../typeScript/types";
 
 import "./buttons.styles.css";
 
-interface IButtons {
+interface IProps {
     add: () => void;
     remove: () => void;
 }
 
-function Buttons({add, remove}: IButtons) {
+function Buttons({add, remove}: IProps): React.ReactElement<IProps> {
     return (
         <div className="buttons">
             <button onClick={add} type="button">
@@ -36,4 +36,4 @@ function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
     };
 }
 
-export default connect<IButtons, MapDispatchToPropsTypes, {}, stateTypes>(null, mapDispatchToProps)(Buttons);
+export default connect<IProps, MapDispatchToPropsTypes, {}, stateTypes>(null, mapDispatchToProps)(Buttons);

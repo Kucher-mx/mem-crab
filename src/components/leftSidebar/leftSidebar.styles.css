@@ -5,7 +5,7 @@
     justify-content: space-between;
 }
 
-.sum-cell{
+.sum-cell {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,7 +20,6 @@
 }
 
 .sum-cell .background {
-    /* display: none; */
     background-color: rgba(238, 40, 49, 0.576);
     background-color: rgba(19, 255, 251, 0.5);
     position: absolute;
@@ -31,9 +30,7 @@
     transition: width 0.4s ease-in-out;
 }
 
-.sum-cell .persent{
-    /* display: none; */
-    /* opacity: 0; */
+.sum-cell .persent {
     position: absolute;
     top: 50%;
     left: 50%;

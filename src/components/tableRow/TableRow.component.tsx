@@ -1,22 +1,22 @@
 import React, {MouseEvent} from "react";
 
 import {cellTypes} from "../../typeScript/types";
-import Cell from '../cell/Cell.component'
+import Cell from "../cell/Cell.component";
 
-interface iRow {
+interface IProps {
     row: cellTypes[];
     hoverEnter: (e: MouseEvent) => void;
     hoverOut: (e: MouseEvent) => void;
-    click: (id: string) => void
+    click: (id: string) => void;
 }
 
-function TableRow({row, click, hoverEnter, hoverOut}: iRow) {
+function TableRow({row, click, hoverEnter, hoverOut}: IProps): React.ReactElement<IProps> {
     return (
         <tr>
-            {row.map(({id, amount, isHighlited}) => {
+            {row.map(({id, amount, isHighlighted}) => {
                 const classes = [];
-                if (isHighlited) {
-                    classes.push("highlite");
+                if (isHighlighted) {
+                    classes.push("highlight");
                 }
 
                 return (
@@ -28,11 +28,12 @@ function TableRow({row, click, hoverEnter, hoverOut}: iRow) {
                         id={id}
                         mouseEnter={hoverEnter}
                         mouseLeave={hoverOut}
-                        highlite={isHighlited}
+                        highlight={isHighlighted}
                     />
                 );
             })}
-        </tr>)
+        </tr>
+    );
 }
 
 export default TableRow;

@@ -2,25 +2,22 @@ import React, {FC} from "react";
 import {connect} from "react-redux";
 
 import {cellTypes, rowSumTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
-import { calcColAverage } from "../../utils/utils";
+import {calcColAverage} from "../../utils/utils";
 
 import "./bottomSidebar.styles.css";
 
-interface IBottom {
+interface IProps {
     items: valueTypes;
     elements: cellTypes[];
     table: tableTypes[];
     rowSum: rowSumTypes[];
 }
 
-function BottomSidebar({items, elements, table, rowSum}: IBottom) {
-    let genSum: {genSum: number} = {genSum: 0};
-    if (elements.length !== 0) {
-        genSum = rowSum
-            .reduce((a, b) => ({genSum: a.genSum + b.rowSum}), {
-                genSum: 0,
-            });
-    }
+function BottomSidebar({items, elements, table, rowSum}: IProps): React.ReactElement<IProps> {
+    const genSum: number = React.useMemo(
+        () => (elements.length !== 0 ? rowSum.reduce((acc, rowSumEl) => acc + rowSumEl.rowSum, 0) : 0),
+        [elements.length, rowSum]
+    );
 
     const colInfo = calcColAverage(items.M, items.N, table);
 
@@ -34,7 +31,7 @@ function BottomSidebar({items, elements, table, rowSum}: IBottom) {
                 ))}
             </div>
 
-            {genSum ? <div className="general-sum">{genSum.genSum}</div> : null}
+            {genSum ? <div className="general-sum">{genSum}</div> : null}
         </div>
     );
 }
@@ -42,7 +39,7 @@ function BottomSidebar({items, elements, table, rowSum}: IBottom) {
 interface MapStateToPropsTypes {
     items: {M: number; N: number; X: number};
     elements: cellTypes[];
-    rowSum: rowSumTypes[],
+    rowSum: rowSumTypes[];
     table: tableTypes[];
 }
 
@@ -50,7 +47,7 @@ const stateToProps = (state: stateTypes) => ({
     items: {M: state.M, N: state.N, X: state.X},
     elements: state.elements,
     rowSum: state.rowSum,
-    table: state.table
+    table: state.table,
 });
 
-export default connect<IBottom, MapStateToPropsTypes, {}, stateTypes>(stateToProps)(BottomSidebar);
+export default connect<IProps, MapStateToPropsTypes, {}, stateTypes>(stateToProps)(BottomSidebar);
