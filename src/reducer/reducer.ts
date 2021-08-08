@@ -1,6 +1,6 @@
 import {ActionTypes} from "../actions/actionTypes";
 import {cellsToHighlight, cellTypes, increaseTypes, stateTypes, tableTypes} from "../typeScript/types";
-import {addRow, calcColAverage, calcRowSum} from "../utils/utils";
+import {addRow, calcColAverage, calcRowSum, removeRow} from "../utils/utils";
 
 const initialState: stateTypes = {
     M: 0,
@@ -26,7 +26,7 @@ const reducer = (
         | {type: typeof ActionTypes.REMOVE_ROW}
         | {type: typeof ActionTypes.UNHIGHLIGHT_SUM}
 ) => {
-    let stateModifications: {newTable: tableTypes[]} = {newTable: state.table};
+    let stateModifications: {newTable: tableTypes[]; newAmountObj?: increaseTypes} = {newTable: state.table};
     switch (actions.type) {
         case ActionTypes.ADD_AMOUNT:
             return {
@@ -61,13 +61,19 @@ const reducer = (
             };
 
         case ActionTypes.ADD_ROW:
-            stateModifications = addRow(state.table, state.N);
+            stateModifications = addRow(state.table, state.N, state.amountObj);
             return {
                 ...state,
                 table: stateModifications.newTable,
+                amountObj: stateModifications.newAmountObj,
                 M: Number(state.M) + 1,
-                rowSum: calcRowSum(state.M, state.N, stateModifications.newTable, state.amountObj),
-                colAverage: calcColAverage(state.M, state.N, stateModifications.newTable, state.amountObj),
+                rowSum: calcRowSum(state.M, state.N, stateModifications.newTable, stateModifications.newAmountObj),
+                colAverage: calcColAverage(
+                    state.M,
+                    state.N,
+                    stateModifications.newTable,
+                    stateModifications.newAmountObj
+                ),
             };
 
         case ActionTypes.REMOVE_ROW:
@@ -75,14 +81,20 @@ const reducer = (
                 return {...state};
             }
 
-            stateModifications.newTable = state.table.filter((_, idx) => idx < state.table.length - 1);
+            stateModifications = removeRow(state.table);
 
             return {
                 ...state,
                 M: state.M - 1,
                 table: stateModifications.newTable,
-                rowSum: calcRowSum(state.M, state.N, stateModifications.newTable, state.amountObj),
-                colAverage: calcColAverage(state.M - 1, state.N, stateModifications.newTable, state.amountObj),
+                amountObj: stateModifications.newAmountObj,
+                rowSum: calcRowSum(state.M, state.N, stateModifications.newTable, stateModifications.newAmountObj),
+                colAverage: calcColAverage(
+                    state.M - 1,
+                    state.N,
+                    stateModifications.newTable,
+                    stateModifications.newAmountObj
+                ),
             };
 
         case ActionTypes.HIGHLIGHT_SUM:
