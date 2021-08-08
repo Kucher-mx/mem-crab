@@ -1,25 +1,25 @@
 import React, {FC} from "react";
 import {connect} from "react-redux";
 
-import {cellTypes, rowSumTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
+import {cellTypes, increaseTypes, rowSumTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
 import {calcColAverage} from "../../utils/utils";
 
 import "./bottomSidebar.styles.css";
 
 interface IProps {
     items: valueTypes;
-    elements: cellTypes[];
     table: tableTypes[];
     rowSum: rowSumTypes[];
+    amountObj: increaseTypes;
 }
 
-function BottomSidebar({items, elements, table, rowSum}: IProps): React.ReactElement<IProps> {
+function BottomSidebar({items, amountObj, table, rowSum}: IProps): React.ReactElement<IProps> {
     const genSum: number = React.useMemo(
-        () => (elements.length !== 0 ? rowSum.reduce((acc, rowSumEl) => acc + rowSumEl.rowSum, 0) : 0),
-        [elements.length, rowSum]
+        () => Object.values(amountObj).reduce((acc, cellValue) => acc + cellValue, 0),
+        [amountObj]
     );
 
-    const colInfo = calcColAverage(items.M, items.N, table);
+    const colInfo = calcColAverage(items.M, items.N, table, amountObj);
 
     return (
         <div className="bottom">
@@ -38,16 +38,16 @@ function BottomSidebar({items, elements, table, rowSum}: IProps): React.ReactEle
 
 interface MapStateToPropsTypes {
     items: {M: number; N: number; X: number};
-    elements: cellTypes[];
     rowSum: rowSumTypes[];
     table: tableTypes[];
+    amountObj: increaseTypes;
 }
 
 const stateToProps = (state: stateTypes) => ({
     items: {M: state.M, N: state.N, X: state.X},
-    elements: state.elements,
     rowSum: state.rowSum,
     table: state.table,
+    amountObj: state.amountObj,
 });
 
 export default connect<IProps, MapStateToPropsTypes, {}, stateTypes>(stateToProps)(BottomSidebar);

@@ -1,5 +1,5 @@
 import {ActionTypes} from "../actions/actionTypes";
-import type {stateTypes} from "../typeScript/types";
+import type {cellsToHighlight, increaseTypes, stateTypes} from "../typeScript/types";
 
 const SET_CONSTS = (value: stateTypes) => ({type: ActionTypes.SET_CONSTS, value});
 
@@ -7,11 +7,11 @@ const ADD_ROW = () => ({type: ActionTypes.ADD_ROW});
 
 const REMOVE_ROW = () => ({type: ActionTypes.REMOVE_ROW});
 
-const ADD_AMOUNT = (id: string) => ({type: ActionTypes.ADD_AMOUNT, value: id});
+const ADD_AMOUNT = (value: increaseTypes) => ({type: ActionTypes.ADD_AMOUNT, value});
 
-const HIGHLIGHT = (id: string[]) => ({type: ActionTypes.HIGHLIGHT, value: id});
+const HIGHLIGHT = (value: cellsToHighlight) => ({type: ActionTypes.HIGHLIGHT, value});
 
-const UNHIGHLIGHT = (id: string[]) => ({type: ActionTypes.UNHIGHLIGHT, value: id});
+const UNHIGHLIGHT = () => ({type: ActionTypes.UNHIGHLIGHT});
 
 const HIGHLIGHT_SUM = (id: string) => ({type: ActionTypes.HIGHLIGHT_SUM, value: id});
 

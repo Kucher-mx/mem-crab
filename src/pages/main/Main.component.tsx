@@ -8,79 +8,95 @@ import BottomSidebar from "../../components/bottomSidebar/BottomSidebar.componen
 import Buttons from "../../components/buttons/Buttons.component";
 import LeftSidebar from "../../components/leftSidebar/LeftSidebar.component";
 import Table from "../../components/table/table.component";
-import type {cellTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
+import type {
+    cellsToHighlight,
+    cellTypes,
+    increaseTypes,
+    stateTypes,
+    tableTypes,
+    valueTypes,
+} from "../../typeScript/types";
 
 import "./main.styles.css";
 
 interface IProps {
     items: valueTypes;
     table: tableTypes[];
-    increase: (id: string) => void;
-    highlight: (id: string[]) => void;
-    unHighlight: (id: string[]) => void;
+    amountObj: increaseTypes;
+    increase: (value: increaseTypes) => void;
+    highlight: (value: cellsToHighlight) => void;
+    unHighlight: () => void;
+    cellsHoHighlight: cellsToHighlight;
 }
 
-function MainPage({items, table, increase, highlight, unHighlight}: IProps): React.ReactElement<IProps> {
+function MainPage({
+    items,
+    table,
+    cellsHoHighlight,
+    increase,
+    highlight,
+    amountObj,
+    unHighlight,
+}: IProps): React.ReactElement<IProps> {
     const navigate = useNavigate();
     if (table.length === 0) {
         navigate("/");
     }
 
     const tempArr: cellTypes[] = React.useMemo(
-        () => table.reduce((acc, tableEl) => acc.concat(tableEl.row), []).sort((a, b) => a.amount - b.amount),
-        [table]
+        () =>
+            table
+                .reduce((acc, tableEl) => acc.concat(tableEl.row), [])
+                .map(el => ({...el, amount: amountObj[el.id]}))
+                .sort((a, b) => a.amount - b.amount),
+        [amountObj, table]
     );
 
     const inHoverCellHandle = React.useCallback(
         (e: MouseEvent) => {
-            const cellsToHighlight: string[] = [];
             const hoverElementIdx = tempArr.findIndex(el => (e.currentTarget ? el.id === e.currentTarget.id : false));
 
-            cellsToHighlight.push(tempArr[hoverElementIdx].id);
+            const mappedArr = tempArr.map(cell => ({
+                ...cell,
+                amount: Math.abs(cell.amount - tempArr[hoverElementIdx].amount),
+            }));
 
-            let iterateLess = hoverElementIdx === 0 ? 0 : hoverElementIdx - 1;
-            let iterateMany = hoverElementIdx === tempArr.length ? tempArr.length : hoverElementIdx + 1;
+            const hoveredStart = hoverElementIdx - items.X < 0 ? 0 : hoverElementIdx - items.X;
+            const hoveredEnd =
+                items.X * 2 + 1 + hoveredStart > mappedArr.length - 1
+                    ? mappedArr.length - 1
+                    : items.X * 2 + 1 + hoveredStart;
 
-            // eslint-disable-next-line no-loops/no-loops
-            while (cellsToHighlight.length <= items.X) {
-                if (iterateLess === 0) {
-                    cellsToHighlight.push(tempArr[iterateMany].id);
-                    iterateMany += 1;
-                    continue;
-                }
+            const splicedArr = mappedArr
+                // .slice(hoveredStart, hoveredEnd)
+                .filter((_, idx) => idx >= hoveredStart && idx <= hoveredEnd)
+                .sort((a, b) => a.amount - b.amount)
+                .slice(0, items.X);
 
-                if (iterateMany === tempArr.length) {
-                    cellsToHighlight.push(tempArr[iterateLess].id);
-                    iterateLess -= 1;
-                    continue;
-                }
+            const objToHighlight = splicedArr
+                .map(cell => ({cellId: cell.id, rowId: cell.rowId}))
+                .reduce((acc, {rowId, cellId}) => {
+                    if (!acc[rowId]) {
+                        acc[rowId] = {};
+                        acc[rowId][cellId] = true;
+                    } else {
+                        acc[rowId] = {...acc[rowId], [cellId]: true};
+                    }
+                    return acc;
+                }, {});
 
-                const diffLess = Math.abs(tempArr[iterateLess].amount - tempArr[hoverElementIdx].amount);
-                const diffMany = Math.abs(tempArr[iterateMany].amount - tempArr[hoverElementIdx].amount);
-
-                if (diffLess < diffMany) {
-                    cellsToHighlight.push(tempArr[iterateLess].id);
-                    iterateLess - 1 === 0 ? (iterateLess = 0) : (iterateLess -= 1);
-                    continue;
-                } else {
-                    cellsToHighlight.push(tempArr[iterateMany].id);
-                    iterateMany + 1 === tempArr.length - 1 ? (iterateMany = tempArr.length - 1) : (iterateMany += 1);
-                    continue;
-                }
-            }
-            highlight(cellsToHighlight);
+            highlight(objToHighlight);
         },
         [highlight, items.X, tempArr]
     );
 
-    const outHoverCellHandle = React.useCallback(
-        (e: MouseEvent) => {
-            const cellToUnhighlight = tempArr.filter(el => el.isHighlighted).map(el => el.id);
+    const outHoverCellHandle = React.useCallback(() => unHighlight(), [unHighlight]);
 
-            unHighlight(cellToUnhighlight);
-        },
-        [tempArr, unHighlight]
-    );
+    const increaseFunc = (id: string) =>
+        increase({
+            ...amountObj,
+            [id]: amountObj[id] + 1,
+        });
 
     return (
         <div className="main-page">
@@ -88,7 +104,14 @@ function MainPage({items, table, increase, highlight, unHighlight}: IProps): Rea
                 MEM-CRAB React Test
             </Link>
             <div className="table-wrapper">
-                <Table table={table} hoverEnter={inHoverCellHandle} hoverOut={outHoverCellHandle} click={increase} />
+                <Table
+                    table={table}
+                    cellsHoHighlight={cellsHoHighlight}
+                    hoverEnter={inHoverCellHandle}
+                    hoverOut={outHoverCellHandle}
+                    click={increaseFunc}
+                    amountObj={amountObj}
+                />
 
                 {
                     // @ts-ignore
@@ -105,26 +128,29 @@ function mapStateToProps(state: stateTypes) {
     return {
         items: {M: state.M, N: state.N, X: state.X},
         table: state.table,
+        cellsHoHighlight: state.cellsToHighlight,
+        amountObj: state.amountObj,
     };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
     return {
-        increase: (id: string) => dispatch(ADD_AMOUNT(id)),
-        highlight: (id: string[]) => dispatch(HIGHLIGHT(id)),
-        unHighlight: (id: string[]) => dispatch(UNHIGHLIGHT(id)),
+        increase: (value: increaseTypes) => dispatch(ADD_AMOUNT(value)),
+        highlight: (value: cellsToHighlight) => dispatch(HIGHLIGHT(value)),
+        unHighlight: () => dispatch(UNHIGHLIGHT()),
     };
 }
 
 interface MapStateToPropsTypes {
     items: {M: number; N: number; X: number};
     table: tableTypes[];
+    amountObj: increaseTypes;
 }
 
 interface MapDispatchToPropsTypes {
-    increase: (id: string) => void;
-    highlight: (id: string[]) => void;
-    unHighlight: (id: string[]) => void;
+    increase: (value: increaseTypes) => void;
+    highlight: (value: cellsToHighlight) => void;
+    unHighlight: () => void;
 }
 
 export default connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IProps, stateTypes>(

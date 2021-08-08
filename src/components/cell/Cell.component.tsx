@@ -1,5 +1,7 @@
 import React, {MouseEvent} from "react";
 
+import {cellsToHighlight} from "../../typeScript/types";
+
 interface IProps {
     classes: string;
     onClickHandler: (id: string) => void;
@@ -7,18 +9,17 @@ interface IProps {
     id: string;
     mouseEnter: (e: MouseEvent) => void;
     mouseLeave: (e: MouseEvent) => void;
-    highlight: boolean;
 }
 
 const compareProps = (currentProps: IProps, nextProps: IProps) => {
-    if (nextProps.highlight !== currentProps.highlight || nextProps.amount !== currentProps.amount) {
+    if (nextProps.classes !== currentProps.classes || nextProps.amount !== currentProps.amount) {
         return false;
     }
     return true;
 };
 
-export default React.memo(
-    ({classes, onClickHandler, amount, id, mouseEnter, mouseLeave}: IProps): React.ReactElement<IProps> => (
+function Cell({classes, onClickHandler, amount, id, mouseEnter, mouseLeave}: IProps): React.ReactElement<IProps> {
+    return (
         <td
             className={classes}
             onClick={e => onClickHandler(e.currentTarget.id)}
@@ -28,6 +29,22 @@ export default React.memo(
         >
             {amount}
         </td>
-    ),
-    compareProps
-);
+    );
+}
+
+export default React.memo(Cell, compareProps);
+
+// export default React.memo(
+//     ({classes, onClickHandler, amount, id, rowId, mouseEnter, mouseLeave}: IProps): React.ReactElement<IProps> => (
+//         <td
+//             className={classes ? "highlight" : ""}
+//             onClick={e => onClickHandler(e.currentTarget.id)}
+//             id={id}
+//             onMouseEnter={e => mouseEnter(e, rowId)}
+//             onMouseLeave={mouseLeave}
+//         >
+//             {amount}
+//         </td>
+//     ),
+//     compareProps
+// );

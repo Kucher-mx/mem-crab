@@ -1,14 +1,17 @@
-import {cellTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
+import {increaseTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
 import {calcColAverage, calcRowSum, generateID, getRandomInt} from "../../utils/utils";
 
-const generateTable = (values: valueTypes): {table: tableTypes[]; consts: valueTypes; elements: cellTypes[]} => {
+const generateTable = (values: valueTypes): {table: tableTypes[]; consts: valueTypes; amountObj: increaseTypes} => {
     const {M, N, X} = values;
     const table = genMatrix(M, N);
-    const elements = table.reduce((a, b) => a.concat(b.row), []).sort((a, b) => a.amount - b.amount);
-    const stateSetUp: {table: tableTypes[]; consts: valueTypes; elements: cellTypes[]} = {
+    const amountObj = table.reduce((outerAcc, b) => {
+        const tempArr = [].concat(b.row);
+        return {...outerAcc, ...tempArr.reduce((acc, elItem) => ({...acc, [elItem.id]: getRandomInt()}), {})};
+    }, {});
+    const stateSetUp: {table: tableTypes[]; consts: valueTypes; amountObj: increaseTypes} = {
         table,
         consts: {M, N, X},
-        elements,
+        amountObj,
     };
 
     return stateSetUp;
@@ -16,28 +19,29 @@ const generateTable = (values: valueTypes): {table: tableTypes[]; consts: valueT
 
 const genMatrix = (rows: number, cols: number): tableTypes[] => {
     const matrix = Array.from({length: rows}, () => {
+        const rowId = generateID();
         const row = Array.from({length: cols}, () => {
             const cell = {
                 id: generateID(),
-                amount: getRandomInt(),
-                isHighlighted: false,
+                rowId,
             };
             return cell;
         });
-        return {id: generateID(), row};
+        return {id: rowId, row};
     });
     return matrix;
 };
 
 export const genState = (values): stateTypes => {
-    const {consts, table, elements} = generateTable(values);
+    const {consts, table, amountObj} = generateTable(values);
     return {
         table,
-        rowSum: calcRowSum(consts.M, consts.N, table),
-        colAverage: calcColAverage(consts.M, consts.N, table),
+        rowSum: calcRowSum(consts.M, consts.N, table, amountObj),
+        colAverage: calcColAverage(consts.M, consts.N, table, amountObj),
+        cellsToHighlight: {},
         M: consts.M,
         N: consts.N,
         X: consts.X,
-        elements,
+        amountObj,
     };
 };
