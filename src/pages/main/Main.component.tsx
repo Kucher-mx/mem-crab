@@ -61,15 +61,12 @@ function MainPage({
                 amount: Math.abs(cell.amount - tempArr[hoverElementIdx].amount),
             }));
 
-            const hoveredStart = hoverElementIdx - items.X < 0 ? 0 : hoverElementIdx - items.X;
-            const hoveredEnd =
-                items.X * 2 + 1 + hoveredStart > mappedArr.length - 1
-                    ? mappedArr.length - 1
-                    : items.X * 2 + 1 + hoveredStart;
+            const hoveredStart = Math.max(0, hoverElementIdx - items.X);
+            const hoveredEnd = Math.min(mappedArr.length, items.X * 2 + 1 + hoveredStart);
 
             const splicedArr = mappedArr
-                // .slice(hoveredStart, hoveredEnd)
-                .filter((_, idx) => idx >= hoveredStart && idx <= hoveredEnd)
+                .slice(hoveredStart, hoveredEnd)
+                // .filter((_, idx) => idx >= hoveredStart && idx <= hoveredEnd)
                 .sort((a, b) => a.amount - b.amount)
                 .slice(0, items.X);
 
@@ -80,7 +77,7 @@ function MainPage({
                         acc[rowId] = {};
                         acc[rowId][cellId] = true;
                     } else {
-                        acc[rowId] = {...acc[rowId], [cellId]: true};
+                        acc[rowId][cellId] = true;
                     }
                     return acc;
                 }, {});
