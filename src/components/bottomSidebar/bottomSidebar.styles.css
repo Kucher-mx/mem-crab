@@ -2,7 +2,7 @@
     display: flex;
 }
 
-.bottom-sidebar {
+.bottomSidebar {
     display: grid;
     grid-template-rows: 36px;
     margin-top: 15px;
