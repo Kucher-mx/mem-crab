@@ -1,11 +1,11 @@
-.buttons{
+.buttons {
     margin-top: 25px;
     align-self: flex-end;
     width: fit-content;
     padding-right: 100px;
 }
 
-.buttons button {
+.button {
     border: none;
     border-radius: 3px;
     background-color: #fff;
@@ -16,7 +16,7 @@
     transition: all 0.5s;
 }
 
-.buttons button:hover {
+.button:hover {
     color: #fff;
     background: rgba(255, 255, 255, 0);
 }

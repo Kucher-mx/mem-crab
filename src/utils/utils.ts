@@ -1,4 +1,4 @@
-import {cellsToHighlight, increaseTypes, rowSumTypes, tableTypes} from "../typeScript/types";
+import {increaseTypes, rowSumTypes, tableTypes} from "../typeScript/types";
 
 export const getRandomInt = (): number => Math.floor(Math.random() * 899) + 100;
 
@@ -56,9 +56,12 @@ export const calcColAverage = (
     return colInfoArr;
 };
 
-export const calcRowSum = (M: number, N: number, table: tableTypes[], amountObj: increaseTypes): rowSumTypes[] => {
+export const calcGenSum = (amountObj: increaseTypes): number =>
+    Object.values(amountObj).reduce((acc, cellValue) => acc + cellValue, 0);
+
+export const calcRowSum = (table: tableTypes[], amountObj: increaseTypes): rowSumTypes[] => {
     const rowSumArr: rowSumTypes[] = [];
-    const genSum = Object.values(amountObj).reduce((acc, cellValue) => acc + cellValue, 0);
+    const genSum = calcGenSum(amountObj);
 
     table.forEach(({row}) => {
         const arrSum: number = row.reduce((acc, b: {id: string}) => acc + amountObj[b.id], 0);

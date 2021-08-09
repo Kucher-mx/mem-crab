@@ -1,11 +1,11 @@
-.left-sidebar {
+.leftSidebar {
     margin-left: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.sum-cell {
+.lsSumCell {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,7 +19,7 @@
     transition: font-size 0.2s ease-out;
 }
 
-.sum-cell .background {
+.lsSumCellBack {
     background-color: rgba(238, 40, 49, 0.576);
     background-color: rgba(19, 255, 251, 0.5);
     position: absolute;
@@ -28,14 +28,4 @@
     left: 0;
     z-index: -1;
     transition: width 0.4s ease-in-out;
-}
-
-.sum-cell .persent {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: -1;
-    font-size: 16px;
-    transition: all 0.5s ease-in;
 }

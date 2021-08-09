@@ -1,10 +1,12 @@
-import React, {FC} from "react";
+import React from "react";
 import {connect} from "react-redux";
 
-import {cellTypes, increaseTypes, rowSumTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
+import {increaseTypes, rowSumTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
 import {calcColAverage} from "../../utils/utils";
 
-import "./bottomSidebar.styles.css";
+import withStyles from "isomorphic-style-loader/withStyles";
+//@ts-ignore
+import s from "./bottomSidebar.module.css";
 
 interface IProps {
     items: valueTypes;
@@ -22,16 +24,16 @@ function BottomSidebar({items, amountObj, table, rowSum}: IProps): React.ReactEl
     const colInfo = calcColAverage(items.M, items.N, table, amountObj);
 
     return (
-        <div className="bottom">
-            <div className="bottom-sidebar" style={{gridTemplateColumns: `repeat(${items.N}, 1fr)`}}>
+        <div className={s.bottom}>
+            <div className={s.bottomSidebar} style={{gridTemplateColumns: `repeat(${items.N}, 1fr)`}}>
                 {colInfo.map(({amount, id}) => (
-                    <div key={`_${id}`} className="cell">
+                    <div key={`_${id}`} className={s.bsCell}>
                         {amount}
                     </div>
                 ))}
             </div>
 
-            {genSum ? <div className="general-sum">{genSum}</div> : null}
+            <div className={s.bsGeneralSum}>{genSum}</div>
         </div>
     );
 }
@@ -50,4 +52,4 @@ const stateToProps = (state: stateTypes) => ({
     amountObj: state.amountObj,
 });
 
-export default connect<IProps, MapStateToPropsTypes, {}, stateTypes>(stateToProps)(BottomSidebar);
+export default withStyles(s)(connect<IProps, MapStateToPropsTypes, {}, stateTypes>(stateToProps)(BottomSidebar));

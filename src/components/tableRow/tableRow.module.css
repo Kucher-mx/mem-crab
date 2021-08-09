@@ -1,0 +1,13 @@
+.cell {
+    border: 1px solid #000;
+    padding: 8px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: transparent;
+    color: #000;
+}
+
+.highlight {
+    background-color: rgba(238, 40, 49, 0.576);
+}

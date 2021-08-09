@@ -2,6 +2,9 @@ import React, {MouseEvent} from "react";
 
 import {cellsToHighlight, cellTypes, increaseTypes} from "../../typeScript/types";
 import Cell from "../cell/Cell.component";
+import withStyles from "isomorphic-style-loader/withStyles";
+//@ts-ignore
+import s from "./tableRow.module.css";
 
 interface IProps {
     row: cellTypes[];
@@ -17,10 +20,10 @@ function TableRow({row, amountObj, rowId, highlight, click, hoverEnter, hoverOut
     return (
         <tr>
             {row.map(({id}) => {
-                const cellClasses = [];
+                const cellClasses = [s.cell];
 
                 if (highlight[rowId] && highlight[rowId][id]) {
-                    cellClasses.push("highlight");
+                    cellClasses.push(s.highlight);
                 }
                 return (
                     <Cell
@@ -38,4 +41,4 @@ function TableRow({row, amountObj, rowId, highlight, click, hoverEnter, hoverOut
     );
 }
 
-export default TableRow;
+export default withStyles(s)(TableRow);

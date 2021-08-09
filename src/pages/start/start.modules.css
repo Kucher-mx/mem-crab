@@ -1,4 +1,4 @@
-.start-page{
+.startPage {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,41 +7,41 @@
     background: linear-gradient(#e66465, #9198e5);
 }
 
-.start-page form{
+.spForm {
     display: flex;
     flex-direction: column;
 }
 
-.start-page form input{
+.spInput {
     margin-left: 3px;
     width: 65px;
     border: none;
     border-radius: 3px;
     height: 25px;
-    background-color:rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.6);
     color: #fff;
     padding: 2px 5px;
     font-size: 16px;
 }
 
-.start-page form input:focus{
+.spInput:focus {
     outline: none;
 }
 
-.start-page .label-wrapper{
+.spLabelWrapper {
     width: fit-content;
     display: flex;
     flex-direction: row;
 }
 
-.start-page form label{
+.spFormLabel {
     display: flex;
     align-items: center;
     margin: 0 10px;
     color: #fff;
 }
 
-.start-page form button {
+.spFormButton {
     margin-top: 15px;
     align-self: flex-end;
     width: 110px;
@@ -53,7 +53,7 @@
     color: #fff;
 }
 
-.start-page form button:hover {
+.spFormButton:hover {
     color: #000;
     background: rgba(255, 255, 255, 0.6);
 }
