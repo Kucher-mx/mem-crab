@@ -3,7 +3,6 @@ import React, {MouseEvent} from "react";
 import {cellsToHighlight, cellTypes, increaseTypes} from "../../typeScript/types";
 import Cell from "../cell/Cell.component";
 import withStyles from "isomorphic-style-loader/withStyles";
-//@ts-ignore
 import s from "./tableRow.module.css";
 
 interface IProps {

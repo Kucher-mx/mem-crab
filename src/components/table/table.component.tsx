@@ -4,7 +4,6 @@ import {cellsToHighlight, increaseTypes, tableTypes} from "../../typeScript/type
 import TableRow from "../tableRow/TableRow.component";
 
 import withStyles from "isomorphic-style-loader/withStyles";
-//@ts-ignore
 import s from "./table.module.css";
 
 interface IProps {

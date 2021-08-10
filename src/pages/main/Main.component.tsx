@@ -17,7 +17,6 @@ import type {
 } from "../../typeScript/types";
 
 import withStyles from "isomorphic-style-loader/withStyles";
-//@ts-ignore
 import s from "./main.module.css";
 import {findClosestNumbersInTable} from "./Main.utils";
 
@@ -109,11 +108,7 @@ function MainPage({
                         click={increaseFunc}
                         amountObj={amountObj}
                     />
-
-                    {
-                        // @ts-ignore
-                        <LeftSidebar />
-                    }
+                    <LeftSidebar />
                 </div>
                 <BottomSidebar />
                 <Buttons />

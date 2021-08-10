@@ -7,11 +7,15 @@ import StyleContext from "isomorphic-style-loader/StyleContext";
 import App from "./App";
 import {createStore} from "redux";
 import reducer from "./reducer/reducer";
+import {stateTypes} from "./typeScript/types";
 
-// @ts-ignore
-const preloadedState = window?.__PRELOADED_STATE__;
-//@ts-ignore
-delete window.__PRELOADED_STATE__;
+declare global {
+    interface Window {
+        __PRELOADED_STATE__: stateTypes;
+    }
+}
+
+const preloadedState = window.__PRELOADED_STATE__;
 
 const store = createStore(reducer, preloadedState);
 

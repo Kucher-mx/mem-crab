@@ -2,12 +2,12 @@ import * as React from "react";
 import {useNavigate} from "react-router";
 import withStyles from "isomorphic-style-loader/withStyles";
 
-//@ts-ignore
 import s from "./start.modules.css";
 import {cellTypes, stateTypes, tableTypes, valueTypes} from "../../typeScript/types";
 import {connect} from "react-redux";
 import {Dispatch} from "react";
 import {SET_CONSTS} from "../../actions/action";
+import {genInitialState} from "../../utils/server.utils";
 
 interface IProps {
     setConsts: (value: stateTypes) => void;
@@ -18,7 +18,6 @@ function StartPage({setConsts}: IProps): React.ReactElement<IProps> {
     const [state, setState] = React.useState({M: "", N: "", X: ""});
 
     const onChangeInputHandler = (e: React.FormEvent<HTMLInputElement>) => {
-        // e.persist && e.persist();
         const {name, value} = e.currentTarget;
         setState({...state, [name]: +value});
     };
@@ -27,15 +26,13 @@ function StartPage({setConsts}: IProps): React.ReactElement<IProps> {
         e.preventDefault();
 
         const {M, N, X} = state;
-        if (+M <= 0 || +N <= 0 || +X <= 0 || +M * +N - 10 < +X) {
+        if (+M <= 0 || +N <= 0 || +X <= 0 || +M * +N - 1 < +X) {
             setState({M: "", N: "", X: ""});
         } else {
-            fetch(`/app?m=${M}&n=${N}&x=${X}`)
-                .then(res => res.json())
-                .then(resParsed => {
-                    setConsts(resParsed);
-                    navigate(`/app/${M}/${N}/${X}`);
-                });
+            const {M, N, X} = state;
+            const initialState = genInitialState({M, N, X});
+            setConsts(initialState);
+            navigate(`/app/${M}/${N}/${X}`);
         }
     };
 

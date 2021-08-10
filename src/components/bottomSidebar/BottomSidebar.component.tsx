@@ -5,7 +5,6 @@ import {increaseTypes, rowSumTypes, stateTypes, tableTypes, valueTypes} from "..
 import {calcColAverage} from "../../utils/utils";
 
 import withStyles from "isomorphic-style-loader/withStyles";
-//@ts-ignore
 import s from "./bottomSidebar.module.css";
 
 interface IProps {

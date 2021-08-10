@@ -4,7 +4,6 @@ import {Route, Routes} from "react-router-dom";
 import MainPage from "./pages/main/Main.component";
 import StartPage from "./pages/start/Start.component";
 import withStyles from "isomorphic-style-loader/withStyles";
-//@ts-ignore
 import s from "./App.module.css";
 
 function App() {

@@ -5,7 +5,6 @@ import {HIGHLIGHT_SUM, UNHIGHLIGHT_SUM} from "../../actions/action";
 import {rowSumTypes, stateTypes} from "../../typeScript/types";
 
 import withStyles from "isomorphic-style-loader/withStyles";
-//@ts-ignore
 import s from "./leftSidebar.module.css";
 
 interface IProps {

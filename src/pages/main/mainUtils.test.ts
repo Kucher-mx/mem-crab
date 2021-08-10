@@ -25,10 +25,6 @@ describe("test findClosestNumbersInTable function: ", () => {
         expect(findClosestResult).toBeDefined();
     });
 
-    test("function return an array", () => {
-        expect(typeof findClosestResult).toBe("object");
-    });
-
     test("function return an array with correct length", () => {
         expect(Object.entries(findClosestResult).length).toBe(1);
     });

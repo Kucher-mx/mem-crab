@@ -5,7 +5,6 @@ import {ADD_ROW, REMOVE_ROW} from "../../actions/action";
 import {stateTypes} from "../../typeScript/types";
 
 import withStyles from "isomorphic-style-loader/withStyles";
-//@ts-ignore
 import s from "./buttons.module.css";
 
 interface IProps {
