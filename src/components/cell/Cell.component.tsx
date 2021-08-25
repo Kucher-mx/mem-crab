@@ -33,18 +33,3 @@ function Cell({classes, onClickHandler, amount, id, mouseEnter, mouseLeave}: IPr
 }
 
 export default React.memo(Cell, compareProps);
-
-// export default React.memo(
-//     ({classes, onClickHandler, amount, id, rowId, mouseEnter, mouseLeave}: IProps): React.ReactElement<IProps> => (
-//         <td
-//             className={classes ? "highlight" : ""}
-//             onClick={e => onClickHandler(e.currentTarget.id)}
-//             id={id}
-//             onMouseEnter={e => mouseEnter(e, rowId)}
-//             onMouseLeave={mouseLeave}
-//         >
-//             {amount}
-//         </td>
-//     ),
-//     compareProps
-// );

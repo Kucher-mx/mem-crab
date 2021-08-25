@@ -2,20 +2,8 @@ import {ActionTypes} from "../actions/actionTypes";
 import {cellsToHighlight, cellTypes, increaseTypes, stateTypes, tableTypes} from "../typeScript/types";
 import {addRow, calcColAverage, calcRowSum, removeRow} from "../utils/utils";
 
-const initialState: stateTypes = {
-    M: 0,
-    N: 0,
-    X: 0,
-    table: [],
-    rowSum: [],
-    colAverage: [],
-    cellsToHighlight: {},
-    amountObj: {},
-};
-
 const reducer = (
-    // eslint-disable-next-line default-param-last
-    state: stateTypes = initialState,
+    state: stateTypes,
     actions:
         | {type: typeof ActionTypes.ADD_AMOUNT; value: increaseTypes}
         | {type: typeof ActionTypes.HIGHLIGHT; value: cellsToHighlight}
@@ -32,7 +20,7 @@ const reducer = (
             return {
                 ...state,
                 amountObj: actions.value,
-                rowSum: calcRowSum(state.M, state.N, state.table, actions.value),
+                rowSum: calcRowSum(state.table, actions.value),
                 colAverage: calcColAverage(state.M, state.N, stateModifications.newTable, actions.value),
             };
 
@@ -54,6 +42,7 @@ const reducer = (
                 table: actions.value.table,
                 rowSum: actions.value.rowSum,
                 colAverage: actions.value.colAverage,
+                cellsToHighlight: actions.value.cellsToHighlight,
                 M: actions.value.M,
                 N: actions.value.N,
                 X: actions.value.X,
@@ -67,7 +56,7 @@ const reducer = (
                 table: stateModifications.newTable,
                 amountObj: stateModifications.newAmountObj,
                 M: Number(state.M) + 1,
-                rowSum: calcRowSum(state.M, state.N, stateModifications.newTable, stateModifications.newAmountObj),
+                rowSum: calcRowSum(stateModifications.newTable, stateModifications.newAmountObj),
                 colAverage: calcColAverage(
                     state.M,
                     state.N,
@@ -88,7 +77,7 @@ const reducer = (
                 M: state.M - 1,
                 table: stateModifications.newTable,
                 amountObj: stateModifications.newAmountObj,
-                rowSum: calcRowSum(state.M, state.N, stateModifications.newTable, stateModifications.newAmountObj),
+                rowSum: calcRowSum(stateModifications.newTable, stateModifications.newAmountObj),
                 colAverage: calcColAverage(
                     state.M - 1,
                     state.N,

@@ -1,10 +1,11 @@
-import React, {Dispatch, FC, MouseEvent} from "react";
+import * as React from "react";
 import {connect} from "react-redux";
 
 import {HIGHLIGHT_SUM, UNHIGHLIGHT_SUM} from "../../actions/action";
 import {rowSumTypes, stateTypes} from "../../typeScript/types";
 
-import "./leftSidebar.styles.css";
+import withStyles from "isomorphic-style-loader/withStyles";
+import s from "./leftSidebar.module.css";
 
 interface IProps {
     rowSum: rowSumTypes[];
@@ -13,7 +14,7 @@ interface IProps {
 }
 
 function LeftSidebar({rowSum, highlight_sum, unHighlight_sum}: IProps): React.ReactElement<IProps> {
-    const inHoverSumHandle = (e: MouseEvent) => {
+    const inHoverSumHandle = (e: React.MouseEvent) => {
         highlight_sum(e.currentTarget.id);
     };
 
@@ -22,7 +23,7 @@ function LeftSidebar({rowSum, highlight_sum, unHighlight_sum}: IProps): React.Re
     };
 
     return (
-        <div className="left-sidebar">
+        <div className={s.leftSidebar}>
             {rowSum.map(item => {
                 const backgroundStyles = item.isHoveredSum
                     ? {
@@ -33,11 +34,11 @@ function LeftSidebar({rowSum, highlight_sum, unHighlight_sum}: IProps): React.Re
                     <div
                         id={item.id}
                         key={item.id}
-                        className="sum-cell"
+                        className={s.lsSumCell}
                         onMouseEnter={inHoverSumHandle}
                         onMouseLeave={outHoverSumHandle}
                     >
-                        <div className="background" style={backgroundStyles} />
+                        <div className={s.lsSumCellBack} style={backgroundStyles} />
                         {item.isHoveredSum ? `${item.rowPercent}%` : item.rowSum}
                     </div>
                 );
@@ -61,14 +62,16 @@ const stateToProps = (state: stateTypes) => ({
     rowSum: state.rowSum,
 });
 
-function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
+function mapDispatchToProps(dispatch: React.Dispatch<{type: string; id?: string}>) {
     return {
         highlight_sum: (id: string) => dispatch(HIGHLIGHT_SUM(id)),
         unHighlight_sum: () => dispatch(UNHIGHLIGHT_SUM()),
     };
 }
 
-export default connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IProps, stateTypes>(
-    stateToProps,
-    mapDispatchToProps
-)(LeftSidebar);
+export default withStyles(s)(
+    connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IProps, stateTypes>(
+        stateToProps,
+        mapDispatchToProps
+    )(LeftSidebar)
+);

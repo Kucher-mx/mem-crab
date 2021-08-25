@@ -1,0 +1,22 @@
+.buttons {
+    margin-top: 25px;
+    align-self: flex-end;
+    width: fit-content;
+    padding-right: 100px;
+}
+
+.button {
+    border: none;
+    border-radius: 3px;
+    background-color: #fff;
+    height: 25px;
+    width: 35px;
+    margin: 0 5px;
+    font-size: 18px;
+    transition: all 0.5s;
+}
+
+.button:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0);
+}

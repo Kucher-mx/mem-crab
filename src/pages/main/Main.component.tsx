@@ -1,6 +1,5 @@
-import React, {Dispatch, FC, MouseEvent} from "react";
+import * as React from "react";
 import {connect} from "react-redux";
-import {useNavigate} from "react-router";
 import {Link} from "react-router-dom";
 
 import {ADD_AMOUNT, HIGHLIGHT, UNHIGHLIGHT} from "../../actions/action";
@@ -17,7 +16,9 @@ import type {
     valueTypes,
 } from "../../typeScript/types";
 
-import "./main.styles.css";
+import withStyles from "isomorphic-style-loader/withStyles";
+import s from "./main.module.css";
+import {findClosestNumbersInTable} from "./Main.utils";
 
 interface IProps {
     items: valueTypes;
@@ -26,23 +27,48 @@ interface IProps {
     increase: (value: increaseTypes) => void;
     highlight: (value: cellsToHighlight) => void;
     unHighlight: () => void;
-    cellsHoHighlight: cellsToHighlight;
+    cellsToHighlight: cellsToHighlight;
+}
+
+function mapStateToProps(state: stateTypes) {
+    return {
+        items: {M: state.M, N: state.N, X: state.X},
+        table: state.table,
+        cellsToHighlight: state.cellsToHighlight,
+        amountObj: state.amountObj,
+    };
+}
+
+function mapDispatchToProps(dispatch: React.Dispatch<{type: string; id?: string}>) {
+    return {
+        increase: (value: increaseTypes) => dispatch(ADD_AMOUNT(value)),
+        highlight: (value: cellsToHighlight) => dispatch(HIGHLIGHT(value)),
+        unHighlight: () => dispatch(UNHIGHLIGHT()),
+    };
+}
+
+interface MapStateToPropsTypes {
+    items: {M: number; N: number; X: number};
+    table: tableTypes[];
+    amountObj: increaseTypes;
+    cellsToHighlight: cellsToHighlight;
+}
+
+interface MapDispatchToPropsTypes {
+    increase: (value: increaseTypes) => void;
+    highlight: (value: cellsToHighlight) => void;
+    unHighlight: () => void;
 }
 
 function MainPage({
     items,
     table,
-    cellsHoHighlight,
+    cellsToHighlight,
     increase,
     highlight,
     amountObj,
     unHighlight,
 }: IProps): React.ReactElement<IProps> {
-    const navigate = useNavigate();
-    if (table.length === 0) {
-        navigate("/");
-    }
-
     const tempArr: cellTypes[] = React.useMemo(
         () =>
             table
@@ -53,36 +79,8 @@ function MainPage({
     );
 
     const inHoverCellHandle = React.useCallback(
-        (e: MouseEvent) => {
-            const hoverElementIdx = tempArr.findIndex(el => (e.currentTarget ? el.id === e.currentTarget.id : false));
-
-            const mappedArr = tempArr.map(cell => ({
-                ...cell,
-                amount: Math.abs(cell.amount - tempArr[hoverElementIdx].amount),
-            }));
-
-            const hoveredStart = Math.max(0, hoverElementIdx - items.X);
-            const hoveredEnd = Math.min(mappedArr.length, items.X * 2 + 1 + hoveredStart);
-
-            const splicedArr = mappedArr
-                .slice(hoveredStart, hoveredEnd)
-                // .filter((_, idx) => idx >= hoveredStart && idx <= hoveredEnd)
-                .sort((a, b) => a.amount - b.amount)
-                .slice(0, items.X);
-
-            const objToHighlight = splicedArr
-                .map(cell => ({cellId: cell.id, rowId: cell.rowId}))
-                .reduce((acc, {rowId, cellId}) => {
-                    if (!acc[rowId]) {
-                        acc[rowId] = {};
-                        acc[rowId][cellId] = true;
-                    } else {
-                        acc[rowId][cellId] = true;
-                    }
-                    return acc;
-                }, {});
-
-            highlight(objToHighlight);
+        (e: React.MouseEvent) => {
+            highlight(findClosestNumbersInTable(tempArr, e.currentTarget.id, items.X));
         },
         [highlight, items.X, tempArr]
     );
@@ -96,61 +94,32 @@ function MainPage({
         });
 
     return (
-        <div className="main-page">
-            <Link to="/" className="title">
-                MEM-CRAB React Test
-            </Link>
-            <div className="table-wrapper">
-                <Table
-                    table={table}
-                    cellsHoHighlight={cellsHoHighlight}
-                    hoverEnter={inHoverCellHandle}
-                    hoverOut={outHoverCellHandle}
-                    click={increaseFunc}
-                    amountObj={amountObj}
-                />
-
-                {
-                    // @ts-ignore
+        <div>
+            <div className={s.mainPage}>
+                <Link to="/" className={s.title}>
+                    MEM-CRAB React Test
+                </Link>
+                <div className={s.mpTableWrapper}>
+                    <Table
+                        table={table}
+                        cellsHoHighlight={cellsToHighlight}
+                        hoverEnter={inHoverCellHandle}
+                        hoverOut={outHoverCellHandle}
+                        click={increaseFunc}
+                        amountObj={amountObj}
+                    />
                     <LeftSidebar />
-                }
+                </div>
+                <BottomSidebar />
+                <Buttons />
             </div>
-            <BottomSidebar />
-            <Buttons />
         </div>
     );
 }
 
-function mapStateToProps(state: stateTypes) {
-    return {
-        items: {M: state.M, N: state.N, X: state.X},
-        table: state.table,
-        cellsHoHighlight: state.cellsToHighlight,
-        amountObj: state.amountObj,
-    };
-}
-
-function mapDispatchToProps(dispatch: Dispatch<{type: string; id?: string}>) {
-    return {
-        increase: (value: increaseTypes) => dispatch(ADD_AMOUNT(value)),
-        highlight: (value: cellsToHighlight) => dispatch(HIGHLIGHT(value)),
-        unHighlight: () => dispatch(UNHIGHLIGHT()),
-    };
-}
-
-interface MapStateToPropsTypes {
-    items: {M: number; N: number; X: number};
-    table: tableTypes[];
-    amountObj: increaseTypes;
-}
-
-interface MapDispatchToPropsTypes {
-    increase: (value: increaseTypes) => void;
-    highlight: (value: cellsToHighlight) => void;
-    unHighlight: () => void;
-}
-
-export default connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IProps, stateTypes>(
-    mapStateToProps,
-    mapDispatchToProps
-)(MainPage);
+export default withStyles(s)(
+    connect<MapStateToPropsTypes, MapDispatchToPropsTypes, IProps, stateTypes>(
+        mapStateToProps,
+        mapDispatchToProps
+    )(MainPage)
+);
