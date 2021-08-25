@@ -15,7 +15,7 @@ interface IProps {
 
 function StartPage({setConsts}: IProps): React.ReactElement<IProps> {
     const navigate = useNavigate();
-    const [state, setState] = React.useState({M: "", N: "", X: ""});
+    const [state, setState] = React.useState({M: "0", N: "0", X: "0"});
 
     const onChangeInputHandler = (e: React.FormEvent<HTMLInputElement>) => {
         const {name, value} = e.currentTarget;
@@ -51,7 +51,6 @@ function StartPage({setConsts}: IProps): React.ReactElement<IProps> {
                                 value={state.M}
                                 onChange={onChangeInputHandler}
                                 id="M"
-                                defaultValue={1}
                             />
                         </label>
 
@@ -65,7 +64,6 @@ function StartPage({setConsts}: IProps): React.ReactElement<IProps> {
                                 value={state.N}
                                 onChange={onChangeInputHandler}
                                 id="N"
-                                defaultValue={3}
                             />
                         </label>
 
@@ -79,7 +77,6 @@ function StartPage({setConsts}: IProps): React.ReactElement<IProps> {
                                 value={state.X}
                                 onChange={onChangeInputHandler}
                                 id="X"
-                                defaultValue={1}
                             />
                         </label>
                     </div>

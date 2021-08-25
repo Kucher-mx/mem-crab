@@ -97,7 +97,7 @@ function MainPage({
         <div>
             <div className={s.mainPage}>
                 <Link to="/" className={s.title}>
-                    MEM-CRAB React Test
+                    MEM-CRAB React table
                 </Link>
                 <div className={s.mpTableWrapper}>
                     <Table

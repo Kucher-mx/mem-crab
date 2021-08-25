@@ -1,0 +1,22 @@
+version: "3"
+services:
+    webpack:
+        container_name: webpack
+        build:
+            context: .
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./src:/memCrab/src:rw
+        command: npm run build:client
+    memcrab:
+        container_name: server
+        build:
+            context: .
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./src:/memCrab/src:rw
+        depends_on:
+            - webpack
+        command: npx pm2-runtime start server/server.js

@@ -1,8 +1,10 @@
 const path = require("path");
+const webpack = require("webpack");
 const {TypedCssModulesPlugin} = require("typed-css-modules-webpack-plugin");
 
 module.exports = {
     entry: ["@babel/polyfill", "./src/client.tsx"],
+    mode: "development",
     output: {
         filename: "bundle.client.js",
         path: path.resolve(__dirname, "./build/static"),
@@ -49,9 +51,26 @@ module.exports = {
         new TypedCssModulesPlugin({
             globPattern: "src/**/*.css",
         }),
+        new webpack.HotModuleReplacementPlugin(),
     ],
     devServer: {
-        port: 8080,
+        static: path.join(__dirname, "build"),
+        compress: true,
+        port: 3000,
+        watchFiles: [
+            "src/actions/*",
+            "src/components/*",
+            "src/pages/*",
+            "src/reducer/*",
+            "src/typeScript/*",
+            "src/utils/*",
+            "src/App.tsx",
+            "src/App.module.css",
+            "public/**/*",
+        ],
+        hot: true,
+        open: true,
+        historyApiFallback: true,
     },
     resolve: {
         extensions: [".tsx", ".ts", ".js", ".css"],

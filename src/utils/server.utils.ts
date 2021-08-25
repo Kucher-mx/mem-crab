@@ -61,7 +61,7 @@ export const renderFullPage = (html, preloadedState, styles) => {
         <script>
           window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, "\\u003c")}
         </script>
-        <script src="/static/bundle.client.js"></script>
+        <script src="http://localhost:3000/bundle.client.js"></script>
       </body>
     </html>
     `;
