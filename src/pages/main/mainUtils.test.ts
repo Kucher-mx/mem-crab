@@ -41,14 +41,18 @@ describe("test findClosestNumbersInTable function: ", () => {
         expect(Object.keys(findClosestResult[keys[0]])).toContain("cellId_6");
     });
 
-    test("function choose proper amount of elements to highlite, X >= tempArr.length", () => {
+    test("function choose proper amount of elements to highlight, X >= tempArr.length", () => {
         tempArr = [
             {id: "cellId_1", amount: 100, rowId: "rowId_1"},
             {id: "cellId_2", amount: 110, rowId: "rowId_1"},
             {id: "cellId_3", amount: 120, rowId: "rowId_1"},
         ];
 
-        const findClosestResult = findClosestNumbersInTable(tempArr, "cellId_2", 4);
-        expect(Object.entries(findClosestResult).length).toBe(1);
+        const findClosestResult = findClosestNumbersInTable(tempArr, "cellId_2", 4),
+            rowKey = Object.keys(findClosestResult)[0],
+            cellKeys = Object.keys(findClosestResult[rowKey]);
+        expect(cellKeys).toContain("cellId_2");
+        expect(cellKeys).toContain("cellId_1");
+        expect(cellKeys).toContain("cellId_3");
     });
 });

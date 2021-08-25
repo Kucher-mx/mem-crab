@@ -1,6 +1,6 @@
 import {renderToString} from "react-dom/server";
 import App from "./App";
-import {MemoryRouter} from "react-router";
+import {MemoryRouter, matchPath} from "react-router";
 import {Provider} from "react-redux";
 import StyleContext from "isomorphic-style-loader/StyleContext";
 import React from "react";
@@ -36,9 +36,9 @@ const requestListener = async (req, res) => {
             cellsToHighlight: {},
             amountObj: {},
         };
-        if (req.url.includes("/app/")) {
-            const queryParams = req.url.split("/").splice(2, 3);
-            const params = {M: +queryParams[0], N: +queryParams[1], X: +queryParams[2]};
+        const queryParams = matchPath({path: "/app/:m/:n/:x"}, req.url).params;
+        if (Object.keys(queryParams).length === 3) {
+            const params = {M: +queryParams.m, N: +queryParams.n, X: +queryParams.x};
             preloadedState = genInitialState(params);
         }
 
@@ -55,12 +55,11 @@ const requestListener = async (req, res) => {
                 </Provider>
             </StyleContext.Provider>
         );
-
         res.end(renderFullPage(reactMarkup, serverState, css));
     }
 };
 const server = http.createServer(requestListener);
 
 server.listen(PORT, () => {
-    console.log(`App is running at http://localhost:${PORT}/`);
+    console.log(`Memcrab is running at http://localhost:${PORT}/`);
 });
