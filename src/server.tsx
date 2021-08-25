@@ -36,9 +36,11 @@ const requestListener = async (req, res) => {
             cellsToHighlight: {},
             amountObj: {},
         };
-        const queryParams = matchPath({path: "/app/:m/:n/:x"}, req.url).params;
-        if (Object.keys(queryParams).length === 3) {
-            const params = {M: +queryParams.m, N: +queryParams.n, X: +queryParams.x};
+        const queryObj = matchPath({path: "/app/:m/:n/:x"}, req.url);
+        console.log(queryObj);
+
+        if (queryObj) {
+            const params = {M: +queryObj.params.m, N: +queryObj.params.n, X: +queryObj.params.x};
             preloadedState = genInitialState(params);
         }
 
